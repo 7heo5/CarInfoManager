@@ -23,6 +23,14 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+// Seed test data at startup using a scoped service
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<CarInfoContext>();
+    dbContext.Database.EnsureCreated(); // Create DB if it doesn't exist
+    DbSeeder.Seed(dbContext); // Add sample data if needed
+}
+
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
