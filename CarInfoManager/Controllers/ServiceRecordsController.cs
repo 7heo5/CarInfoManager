@@ -56,4 +56,47 @@ public class ServiceRecordsController : ControllerBase
 
         return CreatedAtAction(nameof(GetServiceRecords), new { id = record.Id }, record);
     }
+
+    // PUT: api/servicerecords/5
+    // Updates a service record by ID
+    [HttpPut("{id}")]
+    public async Task<IActionResult> PutServiceRecord(int id, ServiceRecord updatedRecord)
+    {
+        if (id != updatedRecord.Id)
+        {
+            return BadRequest("ID mismatch");
+        }
+
+        var existingRecord = await _context.ServiceRecords.FindAsync(id);
+        if (existingRecord == null)
+        {
+            return NotFound();
+        }
+
+        existingRecord.Date = updatedRecord.Date;
+        existingRecord.ServiceType = updatedRecord.ServiceType;
+        existingRecord.Notes = updatedRecord.Notes;
+        existingRecord.Cost = updatedRecord.Cost;
+        existingRecord.CarId = updatedRecord.CarId;
+
+        await _context.SaveChangesAsync();
+        return NoContent();
+    }
+
+    // DELETE: api/servicerecords/5
+    // Deletes a service record by ID
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteServiceRecord(int id)
+    {
+        var record = await _context.ServiceRecords.FindAsync(id);
+        if (record == null)
+        {
+            return NotFound();
+        }
+
+        _context.ServiceRecords.Remove(record);
+        await _context.SaveChangesAsync();
+
+        return NoContent();
+    }
 }

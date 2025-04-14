@@ -38,4 +38,47 @@ public class CarsController : ControllerBase
         // Returns HTTP 201 with the created car
         return CreatedAtAction(nameof(GetCars), new {id = car.Id}, car);
     }
+
+    // PUT: api/cars/5
+    // Updates a specific car by ID
+    [HttpPut("{id}")]
+    public async Task<IActionResult> PutCar(int id, Car updatedCar)
+    {
+        if (id != updatedCar.Id)
+        {
+            return BadRequest("ID Mismatch");
+        }
+
+        var existingCar = await _context.Cars.FindAsync(id);
+        if (existingCar == null)
+        {
+            return NotFound();
+        }
+
+        // Updated car fields
+        existingCar.Make = updatedCar.Make;
+        existingCar.Model = updatedCar.Model;
+        existingCar.Year = updatedCar.Year;
+        existingCar.VIN = updatedCar.VIN;
+
+        await _context.SaveChangesAsync();
+        return NoContent(); // 204 success response with no content
+    }
+
+    // DELETE: api/cars/5
+    // Deletes a car by ID
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteCar(int id)
+    {
+        var car = await _context.Cars.FindAsync(id);
+        if (car == null)
+        {
+            return NotFound();
+        }
+
+        _context.Cars.Remove(car);
+        await _context.SaveChangesAsync();
+
+        return NoContent();
+    }
 }
