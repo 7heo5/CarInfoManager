@@ -4,6 +4,12 @@ import React from "react";
 function CarList({ cars, onDelete, onEdit }) {
   const [expandedCarId, setExpandedCarId] = useState(null);
   const [serviceRecords, setServiceRecords] = useState([]);
+  const [newRecord, setNewRecord] = useState({
+    date: '',
+    serviceType: '',
+    notes: '',
+    cost: '',
+  });
 
   const toggleServiceHistory = async (carId) => {
     if (expandedCarId === carId) {
@@ -19,6 +25,39 @@ function CarList({ cars, onDelete, onEdit }) {
       } catch (error) {
         alert(error.message);
       }
+    }
+  };
+
+  const handleRecordChange = (e) => {
+    const { name, value } = e.target;
+    setNewRecord((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleAddServiceRecord = async (carId) => {
+    const recordToSend = {
+      ...newRecord,
+      carId,
+      cost: parseFloat(newRecord.cost),
+      date: new Date(newRecord.date).toISOString(),
+    };
+
+    try {
+      const res = await fetch('http://localhost:5257/api/servicerecords', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(recordToSend),
+      });
+
+      if (!res.ok) throw new Error('Failed to add service record');
+
+      // Refresh Records
+      toggleServiceHistory(carId); // collapse
+      toggleServiceHistory(carId); // re-expand and re-fetch
+      setNewRecord({ date: '', serviceType: '', notes: '', cost: '' });
+    } catch (error) {
+      alert(error.message);
     }
   };
 
@@ -81,6 +120,63 @@ function CarList({ cars, onDelete, onEdit }) {
                         ))}
                       </ul>
                     )}
+                    <form
+                      onSubmit={(e) => {
+                        e.preventDefault();
+                        handleAddServiceRecord(car.id);
+                      }}
+                      className="mt-4 bg-white p-3 border rounded space-y-2"
+                    >
+                      <div>
+                        <label className="block text-sm font-medium">Date</label>
+                        <input
+                          type="date"
+                          name="date"
+                          value={newRecord.date}
+                          onChange={handleRecordChange}
+                          className="border rounded p-1 w-full"
+                          required
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium">Service Type</label>
+                        <input
+                          type="text"
+                          name="serviceType"
+                          value={newRecord.serviceType}
+                          onChange={handleRecordChange}
+                          className="border rounded p-1 w-full"
+                          required
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium">Notes</label>
+                        <textarea
+                          name="notes"
+                          value={newRecord.notes}
+                          onChange={handleRecordChange}
+                          className="border rounded p-1 w-full"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium">Cost (£)</label>
+                        <input
+                          type="number"
+                          name="cost"
+                          value={newRecord.cost}
+                          onChange={handleRecordChange}
+                          className="border rounded p-1 w-full"
+                          step="0.01"
+                          required
+                        />
+                      </div>
+                      <button
+                        type="submit"
+                        className="mt-2 px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700"
+                      >
+                        Add Service Record
+                      </button>
+                    </form>
                   </td>
                 </tr>
               )}
