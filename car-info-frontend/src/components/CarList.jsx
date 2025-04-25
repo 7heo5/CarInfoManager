@@ -10,6 +10,8 @@ function CarList({ cars, onDelete, onEdit }) {
     notes: '',
     cost: '',
   });
+  const [editingRecordId, setEditingRecordId] = useState(null);
+  const [editForm, setEditForm] = useState({ date: "", serviceType: "", cost: "", notes: "" });
 
   const toggleServiceHistory = async (carId) => {
     if (expandedCarId === carId) {
@@ -58,6 +60,59 @@ function CarList({ cars, onDelete, onEdit }) {
       setNewRecord({ date: '', serviceType: '', notes: '', cost: '' });
     } catch (error) {
       alert(error.message);
+    }
+  };
+
+  const handleEditClick = (record) => {
+    setEditingRecordId(record.id);
+    setEditForm({
+      id: record.id,
+      carId: record.carId,
+      date: record.date.split('T')[0],
+      serviceType: record.serviceType,
+      cost: record.cost,
+      notes: record.notes,
+    });
+  };
+
+  const handleEditChange = (e) => {
+    const { name, value } = e.target;
+    setEditForm((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleEditSubmit = async (e) => {
+    e.preventDefault();
+    const updatedRecord = {
+      ...editForm,
+      cost: parseFloat(editForm.cost),
+      date: new Date(editForm.date).toISOString(),
+    };
+    const res = await fetch(`http://localhost:5257/api/servicerecords/${editingRecordId}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(editForm),
+    });
+
+    if (res.ok) {
+      const updated = await res.json();
+      setServiceRecords((prev) =>
+        prev.map((r) => (r.id === updated.id ? updated : r))
+      );
+      setEditingRecordId(null);
+    } else {
+      alert("Failed to update service record.");
+    }
+  };
+
+  const handleDeleteRecord = async (recordId) => {
+    const res = await fetch(`http://localhost:5257/api/servicerecords/${recordId}`, {
+      method: "DELETE",
+    });
+
+    if (res.ok) {
+      setServiceRecords((prev) => prev.filter((r) => r.id !== recordId));
+    } else {
+      alert("Failed to delete record.");
     }
   };
 
@@ -113,9 +168,24 @@ function CarList({ cars, onDelete, onEdit }) {
                     ) : (
                       <ul className="list-disc list-inside space-y-1">
                         {serviceRecords.map((record) => (
-                          <li key={record.id}>
-                            <strong>{new Date(record.date).toLocaleDateString()}</strong> – {record.serviceType} (${record.cost})<br />
-                            <span className="text-sm text-gray-600">{record.notes}</span>
+                          <li key={record.id} className="mb-2">
+                            {editingRecordId === record.id ? (
+                              <form onSubmit={handleEditSubmit} className="space-y-2">
+                                <input type="date" name="date" value={editForm.date} onChange={handleEditChange} className="border rounded px-2" required />
+                                <input type="text" name="serviceType" value={editForm.serviceType} onChange={handleEditChange} placeholder="Type" className="border rounded px-2" required />
+                                <input type="number" name="cost" value={editForm.cost} onChange={handleEditChange} placeholder="Cost" className="border rounded px-2" required />
+                                <input type="text" name="notes" value={editForm.notes} onChange={handleEditChange} placeholder="Notes" className="border rounded px-2" />
+                                <button type="submit" className="bg-green-500 text-white px-2 py-1 rounded">Save</button>
+                                <button type="button" onClick={() => setEditingRecordId(null)} className="bg-gray-400 text-white px-2 py-1 rounded">Cancel</button>
+                              </form>
+                            ) : (
+                              <>
+                                <strong>{new Date(record.date).toLocaleDateString()}</strong> - {record.serviceType} (${record.cost})<br />
+                                <span className="text-sm text-gray-600">{record.notes}</span><br />
+                                <button onClick={() => handleEditClick(record)} className="text-blue-500 mr-2">Edit</button>
+                                <button onClick={() => handleDeleteRecord(record.id)} className="text-red-500">Delete</button>
+                              </>
+                            )}
                           </li>
                         ))}
                       </ul>
