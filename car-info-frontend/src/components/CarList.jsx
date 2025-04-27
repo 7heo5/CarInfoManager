@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import CarRow from "./CarRow";
 import ServiceHistory from "./ServiceHistory";
+import CarCard from "./CarCard";
 
 function CarList({ cars, onDelete, onEdit }) {
   const [expandedCarId, setExpandedCarId] = useState(null);
@@ -28,28 +29,19 @@ function CarList({ cars, onDelete, onEdit }) {
 
   return (
     <div className="p-6">
-      <h2 className="text-2xl font-bold mb-4">Car List</h2>
-      <table className="table-auto border-collapse w-full border border-gray-300">
-        <thead className="bg-gray-100">
-          <tr>
-            <th className="border px-4 py-2">Make</th>
-            <th className="border px-4 py-2">Model</th>
-            <th className="border px-4 py-2">Year</th>
-            <th className="border px-4 py-2">VIN</th>
-            <th className="border px-4 py-2">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {cars.map((car) => (
-            <React.Fragment key={car.id}>
-              <CarRow
-                car={car}
-                onDelete={onDelete}
-                onEdit={onEdit}
-                toggleServiceHistory={toggleServiceHistory}
-                expanded={expandedCarId === car.id}
-              />
-              {expandedCarId === car.id && (
+      <h2 className="text-3xl font-bold mb-8 text-white">My Cars</h2>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {cars.map((car) => (
+          <div key={car.id}>
+            <CarCard
+              car={car}
+              onViewServiceHistory={toggleServiceHistory}
+              onDelete={onDelete}
+              onEdit={onEdit}
+              expanded={expandedCarId === car.id}
+            />
+            {expandedCarId === car.id && (
+              <div className="mt-4">
                 <ServiceHistory
                   carId={car.id}
                   serviceRecords={serviceRecords}
@@ -62,14 +54,14 @@ function CarList({ cars, onDelete, onEdit }) {
                   setEditForm={setEditForm}
                   refreshServiceHistory={() => {
                     toggleServiceHistory(car.id);
-                    setTimeout(() => toggleServiceHistory(car.id), 100); // ensures refresh
+                    setTimeout(() => toggleServiceHistory(car.id), 100);
                   }}
                 />
-              )}
-            </React.Fragment>
-          ))}
-        </tbody>
-      </table>
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
