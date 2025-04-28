@@ -1,26 +1,59 @@
+import React from "react";
+
 function AddServiceRecordForm({ newRecord, onChange, onSubmit }) {
-    return (
-      <form onSubmit={(e) => { e.preventDefault(); onSubmit(); }} className="mt-4 bg-white p-3 border rounded space-y-2">
-        <div>
-          <label className="block text-sm font-medium">Date</label>
-          <input type="date" name="date" value={newRecord.date} onChange={onChange} className="border rounded p-1 w-full" required />
-        </div>
-        <div>
-          <label className="block text-sm font-medium">Service Type</label>
-          <input type="text" name="serviceType" value={newRecord.serviceType} onChange={onChange} className="border rounded p-1 w-full" required />
-        </div>
-        <div>
-          <label className="block text-sm font-medium">Notes</label>
-          <textarea name="notes" value={newRecord.notes} onChange={onChange} className="border rounded p-1 w-full" />
-        </div>
-        <div>
-          <label className="block text-sm font-medium">Cost (£)</label>
-          <input type="number" name="cost" value={newRecord.cost} onChange={onChange} className="border rounded p-1 w-full" step="0.01" required />
-        </div>
-        <button type="submit" className="mt-2 px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700">Add Service Record</button>
-      </form>
-    );
-  }
-  
-  export default AddServiceRecordForm;
-  
+  return (
+    <form onSubmit={(e) => { e.preventDefault(); onSubmit(); }} className="mt-4 bg-gray-800 p-4 rounded-lg space-y-4">
+      <div>
+        <label className="block text-sm font-medium text-gray-300">Date</label>
+        <input
+          type="date"
+          name="date"
+          value={newRecord.date}
+          onChange={onChange}
+          className="w-full bg-gray-700 text-white rounded p-2"
+          required
+        />
+      </div>
+      <div>
+        <label className="block text-sm font-medium text-gray-300">Service Type</label>
+        <input
+          type="text"
+          name="serviceType"
+          value={newRecord.serviceType}
+          onChange={onChange}
+          className="w-full bg-gray-700 text-white rounded p-2"
+          required
+        />
+      </div>
+      <div>
+        <label className="block text-sm font-medium text-gray-300">Notes</label>
+        <textarea
+          name="notes"
+          value={newRecord.notes}
+          onChange={onChange}
+          className="w-full bg-gray-700 text-white rounded p-2"
+        />
+      </div>
+      <div>
+        <label className="block text-sm font-medium text-gray-300">Cost (£)</label>
+        <input
+          type="number"
+          name="cost"
+          value={newRecord.cost}
+          onChange={onChange}
+          className="w-full bg-gray-700 text-white rounded p-2"
+          step="0.01"
+          required
+        />
+      </div>
+      <button
+        type="submit"
+        className="w-full px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition"
+      >
+        Add Service Record
+      </button>
+    </form>
+  );
+}
+
+export default AddServiceRecordForm;

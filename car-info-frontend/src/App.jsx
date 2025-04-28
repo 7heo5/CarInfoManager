@@ -73,7 +73,7 @@ function App() {
 
   return (
       <div className="min-h-screen bg-white p-4">
-        <h1 className="text-3x1 font-bold text-blue-600 mb-4">Car Info Manager</h1>
+        <h1 className="text-5xl font-bold text-black mb-8">Car Service Manager</h1>
         <AddCarForm onCarAdded={handleCarAdded}/>
         <CarList cars={cars} onDelete={handleDelete} onEdit={handleEdit} />
       </div>

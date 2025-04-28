@@ -42,12 +42,12 @@ function AddCarForm({ onCarAdded }) {
     };
 
     return (
-        <div className="p-6 border rounded-lg mb-6 bg-gray-50">
-            <h2 className="text-xl font-semibold mb-4">Add New Car</h2>
+        <div className="p-6 border rounded-2xl mb-6 bg-gray-100 dark:bg-gray-800 shadow-md">
+            <h2 className="text-2xl font-semibold text-white mb-4 text-center">Add New Car</h2>
             <form onSubmit={handleSubmit} className="space-y-4">
                 {error && <div className="text-red-600">{error}</div>}
                 <input
-                    className="block w-full border px-3 py-2 rounded"
+                    className="block w-full rounded-lg border border-gray-300 bg-white p-3 text-gray-900 focus:border-blue-500 focus:ring focus:ring-blue-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
                     type="text"
                     placeholder="Make"
                     value={make}
@@ -55,7 +55,7 @@ function AddCarForm({ onCarAdded }) {
                     required
                 />
                 <input
-                    className="block w-full border px-3 py-2 rounded"
+                    className="block w-full rounded-lg border border-gray-300 bg-white p-3 text-gray-900 focus:border-blue-500 focus:ring focus:ring-blue-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
                     type="text"
                     placeholder="Model"
                     value={model}
@@ -63,7 +63,7 @@ function AddCarForm({ onCarAdded }) {
                     required
                 />
                 <input
-                    className="block w-full border px-3 py-2 rounded"
+                    className="block w-full rounded-lg border border-gray-300 bg-white p-3 text-gray-900 focus:border-blue-500 focus:ring focus:ring-blue-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
                     type="number"
                     placeholder="Year"
                     value={year}
@@ -71,7 +71,7 @@ function AddCarForm({ onCarAdded }) {
                     required
                 />
                 <input
-                    className="block w-full border px-3 py-2 rounded"
+                    className="block w-full rounded-lg border border-gray-300 bg-white p-3 text-gray-900 focus:border-blue-500 focus:ring focus:ring-blue-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
                     type="text"
                     placeholder="VIN"
                     value={vin}
@@ -80,7 +80,7 @@ function AddCarForm({ onCarAdded }) {
                 />
                 <button
                     type="submit"
-                    className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+                    className="w-full bg-blue-600 text-white px-4 py-3 rounded-lg hover:bg-blue-700 transition-colors"
                 >
                     Add Car
                 </button>
