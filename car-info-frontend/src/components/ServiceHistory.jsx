@@ -37,7 +37,7 @@ function ServiceHistory({
   };
 
   return (
-    <div className="bg-gray-700 rounded-xl p-4 mt-4 text-white">
+    <div className="bg-gray-800 rounded-xl p-4 mt-4 text-white">
       <h4 className="text-lg font-bold mb-3">Service History</h4>
 
       {serviceRecords.length === 0 ? (

@@ -3,6 +3,10 @@
 @tailwind utilities;
 
 
+body {
+  @apply bg-gray-900 text-white;
+}
+
 /* :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
