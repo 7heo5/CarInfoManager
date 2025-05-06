@@ -1,5 +1,6 @@
 import React from "react";
 import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
 
 function CarCard({ car, onViewServiceHistory, onDelete, onEdit, expanded }) {
   return (
@@ -13,12 +14,12 @@ function CarCard({ car, onViewServiceHistory, onDelete, onEdit, expanded }) {
       </div>
 
       <div className="flex flex-wrap gap-2">
-        <button
-          onClick={() => onEdit(car)}
+        <Link
+          to={`/edit/${car.id}`}
           className="bg-blue-600 hover:bg-blue-700 text-white text-sm px-3 py-1 rounded-full"
         >
           Edit
-        </button>
+        </Link>
         <button
           onClick={() => onDelete(car.id)}
           className="bg-red-600 hover:bg-red-700 text-white text-sm px-3 py-1 rounded-full"

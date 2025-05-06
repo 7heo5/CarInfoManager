@@ -27,6 +27,20 @@ public class CarsController : ControllerBase
         return await _context.Cars.ToListAsync();
     }
 
+    //GET: api/cars/5
+    [HttpGet("{id}")]
+    public async Task<ActionResult<Car>> GetCar(int id)
+    {
+        var car = await _context.Cars.FindAsync(id);
+
+        if (car == null)
+        {
+            return NotFound();
+        }
+
+        return car;
+    }
+
     // POST: api/cars
     // Adds a new car to the database
     [HttpPost]

@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
-import CarDetails from './CarDetails';
+import CarDetails from './pages/CarDetails';
 import CarList from './components/CarList';
 import AddCarForm from './components/AddCarForm';
+import { Routes, Route, Link } from 'react-router-dom';
+import Dashboard from './pages/Dashboard';
+import AddCar from './pages/AddCar';
+import EditCar from './pages/EditCar';
 
 function App() {
   //const [count, setCount] = useState(0)
@@ -72,11 +74,18 @@ function App() {
   };
 
   return (
-      <div className="min-h-screen bg-gray-900 p-4">
-        <h1 className="text-5xl font-bold text-white mb-8">Car Service Manager</h1>
-        <AddCarForm onCarAdded={handleCarAdded}/>
-        <CarList cars={cars} onDelete={handleDelete} onEdit={handleEdit} />
-      </div>
+    <div className="min-h-screen bg-gray-900 p-4 text-white">
+      <nav className="mb-8 flex gap-4">
+        <Link to="/" className="hover:underline">Dashboard</Link>
+        <Link to="/add" className="hover:underline">Add Car</Link>
+      </nav>
+
+      <Routes>
+        <Route path="/" element={<Dashboard />} />
+        <Route path="/add" element={<AddCar />} />
+        <Route path="/edit/:id" element={<EditCar />} />
+      </Routes>
+    </div>
   );
 }
 

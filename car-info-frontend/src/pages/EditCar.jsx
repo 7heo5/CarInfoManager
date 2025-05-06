@@ -1,49 +1,43 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 
-function AddCarForm({ onCarAdded }) {
-    // Track form field values
-    const [make, setMake] = useState('');
-    const [model, setModel] = useState('');
-    const [year, setYear] = useState('');
-    const [vin, setVin] = useState('');
-    const [error, setError] = useState('');
+function EditCar() {
+    const { id } = useParams();
+    const navigate = useNavigate();
+    const [car, setCar] = useState(null);
+    const [error, setError] = useState("");
+    const [make, setMake] = useState("");
+    const [model, setModel] = useState("");
+    const [year, setYear] = useState("");
+    const [vin, setVin] = useState("");
+
+    useEffect(() => {
+        fetch(`http://localhost:5257/api/cars/${id}`)
+            .then((res) => res.json())
+            .then(setCar);
+    }, [id]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
-        //Create car object
-        const newCar = { make, model, year: parseInt(year), vin };
-
         try {
-            const res = await fetch('http://localhost:5257/api/cars', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(newCar),
+            const res = await fetch(`http://localhost:5257/api/cars/${id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(car),
             });
 
-            if (!res.ok) {
-                throw new Error('Failed to add car');
-            }
-
-            const createdCar = await res.json();
-            onCarAdded(createdCar); // Notify parent to update list
-
-            // Clear the form
-            setMake('');
-            setModel('');
-            setYear('');
-            setVin('');
-            setError('');
+            if (!res.ok) throw new Error("Failed to update car.");
+            navigate('/');
         } catch (err) {
             setError(err.message);
         }
     };
 
+    if (!car) return <p>Loading...</p>;
+
     return (
         <div className="p-6 border rounded-2xl mb-6 bg-gray-100 dark:bg-gray-800 shadow-md">
-            <h1 className="text-3xl font-bold mb-4">Add New Car</h1>
+            <h1 className="text-3xl font-bold mb-4">Edit Car</h1>
             <form onSubmit={handleSubmit} className="space-y-4">
                 {error && <div className="text-red-600">{error}</div>}
                 <input
@@ -82,11 +76,11 @@ function AddCarForm({ onCarAdded }) {
                     type="submit"
                     className="w-full bg-blue-600 text-white px-4 py-3 rounded-lg hover:bg-blue-700 transition-colors"
                 >
-                    Add Car
+                    Update Car
                 </button>
             </form>
         </div>
     );
 }
 
-export default AddCarForm;
+export default EditCar;
