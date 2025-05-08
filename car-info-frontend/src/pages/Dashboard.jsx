@@ -1,13 +1,23 @@
 import { useEffect, useState } from 'react';
-import CarList from '../components/CarList';
+import { useNavigate } from "react-router-dom";
+import CarCard from "../components/CarCard";
 
 function Dashboard() {
   const [cars, setCars] = useState([]);
+  const [error, setError] = useState('');
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetch('http://localhost:5257/api/cars')
-      .then((res) => res.json())
-      .then((data) => setCars(data));
+      .then((res) => {
+        if (!res.ok) throw new Error("Failed to load cars.");
+        return res.json();
+      })
+      .then((data) => setCars(data))
+      .catch((err) => {
+        console.error("Error loading cars:", err);
+        setError("Failed to load cars.");
+      });
   }, []);
 
   const handleDelete = async (id) => {
@@ -22,10 +32,36 @@ function Dashboard() {
     }
   };
 
+  const handleViewServiceHistory = (id) => {
+    alert(`Service history for car with ID: ${id}`);
+  };
+
   return (
     <div>
-      <h1 className="text-4xl font-bold mb-6">Dashboard</h1>
-      <CarList cars={cars} onDelete={handleDelete} />
+      {/* "+ Add New Car" text button */}
+      <div className="flex justify-end mb-4">
+        <button
+          onClick={() => navigate("/add")}
+          className="text-blue-400 hover:underline font-medium"
+        >
+          + Add New Car
+        </button>
+      </div>
+
+      {error && <div className="text-red-500 mb-4">{error}</div>}
+
+      {/* Car Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {cars.map((car) => (
+          <CarCard
+            key={car.id}
+            car={car}
+            onViewServiceHistory={handleViewServiceHistory}
+            onDelete={handleDelete}
+            onEdit={() => navigate(`/edit/${car.id}`)}
+          />
+        ))}
+      </div>
     </div>
   );
 }

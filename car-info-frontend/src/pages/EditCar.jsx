@@ -4,7 +4,6 @@ import { useParams, useNavigate } from "react-router-dom";
 function EditCar() {
     const { id } = useParams();
     const navigate = useNavigate();
-    const [car, setCar] = useState(null);
     const [error, setError] = useState("");
     const [make, setMake] = useState("");
     const [model, setModel] = useState("");
@@ -14,16 +13,31 @@ function EditCar() {
     useEffect(() => {
         fetch(`http://localhost:5257/api/cars/${id}`)
             .then((res) => res.json())
-            .then(setCar);
+            .then((data) => {
+                setMake(data.make);
+                setModel(data.model);
+                setYear(data.year);
+                setVin(data.vin);
+            })
+            .catch((err) => setError("Failed to load car."));
     }, [id]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        
+        const updatedCar = {
+            id: parseInt(id),
+            make,
+            model,
+            year: parseInt(year),
+            vin
+        };
+
         try {
             const res = await fetch(`http://localhost:5257/api/cars/${id}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(car),
+                body: JSON.stringify(updatedCar),
             });
 
             if (!res.ok) throw new Error("Failed to update car.");
@@ -33,7 +47,7 @@ function EditCar() {
         }
     };
 
-    if (!car) return <p>Loading...</p>;
+    if (!make && !model && !year && !vin && !error) return <p>Loading...</p>;
 
     return (
         <div className="p-6 border rounded-2xl mb-6 bg-gray-100 dark:bg-gray-800 shadow-md">
