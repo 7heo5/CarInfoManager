@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import CarCard from "../components/CarCard";
+import ServiceHistory from "../components/ServiceHistory";
 
 function Dashboard() {
   const [cars, setCars] = useState([]);
   const [error, setError] = useState('');
+  const [expandedCarId, setExpandedCarId] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -32,8 +34,8 @@ function Dashboard() {
     }
   };
 
-  const handleViewServiceHistory = (id) => {
-    alert(`Service history for car with ID: ${id}`);
+  const toggleServiceHistory = (carId) => {
+    setExpandedCarId(expandedCarId === carId ? null : carId);
   };
 
   return (
@@ -53,13 +55,18 @@ function Dashboard() {
       {/* Car Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {cars.map((car) => (
-          <CarCard
-            key={car.id}
-            car={car}
-            onViewServiceHistory={handleViewServiceHistory}
-            onDelete={handleDelete}
-            onEdit={() => navigate(`/edit/${car.id}`)}
-          />
+          <div key={car.id}>
+            <CarCard
+              car={car}
+              onEdit={() => navigate(`/edit/${car.id}`)}
+              onDelete={handleDelete}
+              onViewServiceHistory={toggleServiceHistory}
+              expanded={expandedCarId === car.id}
+            />
+            {expandedCarId === car.id && (
+              <ServiceHistory carId={car.id} />
+            )}
+          </div>
         ))}
       </div>
     </div>

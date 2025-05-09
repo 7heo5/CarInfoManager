@@ -1,4 +1,5 @@
 using System;
+using System.Text.Json.Serialization;
 
 namespace CarInfoManager.Models;
 
@@ -12,5 +13,6 @@ public class ServiceRecord
     public string Notes {get; set;} = string.Empty; // Any extra notes
     public decimal Cost {get; set;} // Cost of service
 
+    [JsonIgnore]
     public Car? Car {get; set;} // Navigation property to parent car
 }

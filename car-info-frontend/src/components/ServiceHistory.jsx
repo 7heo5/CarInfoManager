@@ -1,13 +1,33 @@
+import { useState, useEffect } from "react";
 import ServiceRecordItem from "./ServiceRecordItem";
 import AddServiceRecordForm from "./AddServiceRecordForm";
 
-function ServiceHistory({
-  carId, serviceRecords, setServiceRecords,
-  newRecord, setNewRecord,
-  editingRecordId, setEditingRecordId,
-  editForm, setEditForm,
-  refreshServiceHistory
-}) {
+function ServiceHistory({ carId }) {
+  const [serviceRecords, setServiceRecords] = useState([]);
+  const [newRecord, setNewRecord] = useState({
+    date: "",
+    serviceType: "",
+    notes: "",
+    cost: "",
+  });
+  const [editingRecordId, setEditingRecordId] = useState(null);
+  const [editForm, setEditForm] = useState({});
+
+  const fetchServiceRecords = async () => {
+    try {
+      const res = await fetch(`http://localhost:5257/api/servicerecords/car/${carId}`);
+      if (!res.ok) throw new Error("Failed to fetch service records");
+      const data = await res.json();
+      setServiceRecords(data);
+    } catch (error) {
+      console.error("Error loading service records:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchServiceRecords();
+  }, [carId]);
+
   const handleRecordChange = (e) => {
     const { name, value } = e.target;
     setNewRecord((prev) => ({ ...prev, [name]: value }));
@@ -29,7 +49,7 @@ function ServiceHistory({
       });
 
       if (!res.ok) throw new Error('Failed to add service record');
-      refreshServiceHistory();
+      fetchServiceRecords();
       setNewRecord({ date: '', serviceType: '', notes: '', cost: '' });
     } catch (error) {
       alert(error.message);
@@ -53,6 +73,7 @@ function ServiceHistory({
               editForm={editForm}
               setEditForm={setEditForm}
               setServiceRecords={setServiceRecords}
+              refreshServiceHistory={fetchServiceRecords}
             />
           ))}
         </div>
