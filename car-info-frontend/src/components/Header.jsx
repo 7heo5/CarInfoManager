@@ -17,7 +17,7 @@ function Header() {
           {menuOpen ? <X size={28} /> : <Menu size={28} />}
         </button>
 
-        <h1 className="text-xl font-bold tracking-wide">🚗 Car Info Manager</h1>
+        <h1 className="text-xl font-bold tracking-wide">🚗 Car Service Manager</h1>
 
         {/* Placeholder to balance layout */}
         <div style={{ width: "28px" }}></div>
@@ -41,7 +41,7 @@ function Header() {
               setMenuOpen(false);
             }}
           >
-            Add Car
+            Add New Car
           </button>
         </div>
       )}
