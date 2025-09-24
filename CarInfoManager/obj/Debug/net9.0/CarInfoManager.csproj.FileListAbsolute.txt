@@ -156,3 +156,4 @@ Z:\1_Theos_Work\Theo_Projects\CarInfoManager\CarInfoManager\obj\Debug\net9.0\Car
 Z:\1_Theos_Work\Theo_Projects\CarInfoManager\CarInfoManager\obj\Debug\net9.0\CarInfoManager.genruntimeconfig.cache
 Z:\1_Theos_Work\Theo_Projects\CarInfoManager\CarInfoManager\obj\Debug\net9.0\ref\CarInfoManager.dll
 Z:\1_Theos_Work\Theo_Projects\CarInfoManager\CarInfoManager\obj\Debug\net9.0\CarInfoManager.sourcelink.json
+Z:\1_Theos_Work\Theo_Projects\CarInfoManager\CarInfoManager\bin\Debug\net9.0\System.Text.Json.dll

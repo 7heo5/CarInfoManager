@@ -12,4 +12,5 @@ public class CarInfoContext : DbContext
 
     public DbSet<Car> Cars => Set<Car>(); // Represents the Cars table
     public DbSet<ServiceRecord> ServiceRecords => Set<ServiceRecord>(); // Represents the ServiceRecords table
+    public DbSet<ECUCode> ECUCodes { get; set; }
 }
