@@ -3561,19 +3561,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Theo\\.nuget\\packages\\": {}
+    "C:\\Users\\tsylv\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "Z:\\1_Theos_Work\\Theo_Projects\\CarInfoManager\\CarInfoManager\\CarInfoManager.csproj",
+      "projectUniqueName": "C:\\Users\\tsylv\\Projects\\CarInfoManager\\CarInfoManager\\CarInfoManager\\CarInfoManager.csproj",
       "projectName": "CarInfoManager",
-      "projectPath": "Z:\\1_Theos_Work\\Theo_Projects\\CarInfoManager\\CarInfoManager\\CarInfoManager.csproj",
-      "packagesPath": "C:\\Users\\Theo\\.nuget\\packages\\",
-      "outputPath": "Z:\\1_Theos_Work\\Theo_Projects\\CarInfoManager\\CarInfoManager\\obj\\",
+      "projectPath": "C:\\Users\\tsylv\\Projects\\CarInfoManager\\CarInfoManager\\CarInfoManager\\CarInfoManager.csproj",
+      "packagesPath": "C:\\Users\\tsylv\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\tsylv\\Projects\\CarInfoManager\\CarInfoManager\\CarInfoManager\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\Theo\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        "C:\\Users\\tsylv\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net9.0"
@@ -3597,7 +3597,7 @@
         "auditLevel": "low",
         "auditMode": "direct"
       },
-      "SdkAnalysisLevel": "9.0.200"
+      "SdkAnalysisLevel": "9.0.300"
     },
     "frameworks": {
       "net9.0": {
@@ -3647,7 +3647,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.202/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.305/PortableRuntimeIdentifierGraph.json"
       }
     }
   }
