@@ -34,7 +34,7 @@ public class ECUCodesController : ControllerBase
     {
         var ecu = new ECUCode
         {
-            CarId = dto.Id, // Car association
+            CarId = dto.CarId, // Car association
             Code = dto.Code,
             Description = dto.Description,
             Status = Enum.Parse<ECUStatus>(dto.Status),
@@ -45,7 +45,10 @@ public class ECUCodesController : ControllerBase
         await _context.SaveChangesAsync();
 
         dto.Id = ecu.Id;
-        return CreatedAtAction(nameof(GetCodes), new { carId = dto.Id }, dto);
+        dto.CarId = ecu.CarId;
+        dto.LoggedDate = ecu.LoggedDate;
+
+        return CreatedAtAction(nameof(GetCodes), new { carId = ecu.CarId }, dto);
     }
 
     [HttpPut("{id}")]

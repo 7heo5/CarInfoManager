@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import ServiceRecordItem from "./ServiceRecordItem";
 import AddServiceRecordForm from "./AddServiceRecordForm";
+import ECUCodes from "./ECUCodes";
 
 function ServiceHistory({ carId }) {
   const [serviceRecords, setServiceRecords] = useState([]);
@@ -87,6 +88,8 @@ function ServiceHistory({ carId }) {
           onSubmit={() => handleAddServiceRecord(carId)}
         />
       </div>
+      <hr className="my-4 border-gray-600" />
+      <ECUCodes carId={carId} />
     </div>
   );
 }

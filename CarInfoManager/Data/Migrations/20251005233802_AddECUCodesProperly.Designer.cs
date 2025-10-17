@@ -3,6 +3,7 @@ using System;
 using CarInfoManager.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,12 +11,14 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CarInfoManager.Data.Migrations
 {
     [DbContext(typeof(CarInfoContext))]
-    partial class CarInfoContextModelSnapshot : ModelSnapshot
+    [Migration("20251005233802_AddECUCodesProperly")]
+    partial class AddECUCodesProperly
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "9.0.10");
+            modelBuilder.HasAnnotation("ProductVersion", "9.0.9");
 
             modelBuilder.Entity("CarInfoManager.Models.Car", b =>
                 {
