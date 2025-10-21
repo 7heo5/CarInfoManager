@@ -1,4 +1,8 @@
 import { useState } from "react";
+import { Button } from "@/components/ui/button-component";
+import { Input } from "@/components/ui/input";
+import { Card, CardContent } from "@/components/ui/card";
+import { Plus, Loader2 } from "lucide-react";
 
 function AddCarForm({ onCarAdded }) {
     // Track form field values
@@ -7,9 +11,11 @@ function AddCarForm({ onCarAdded }) {
     const [year, setYear] = useState('');
     const [vin, setVin] = useState('');
     const [error, setError] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setIsLoading(true);
 
         //Create car object
         const newCar = { make, model, year: parseInt(year), vin };
@@ -38,54 +44,102 @@ function AddCarForm({ onCarAdded }) {
             setError('');
         } catch (err) {
             setError(err.message);
+        } finally {
+            setIsLoading(false);
         }
     };
 
     return (
-        <div className="p-6 border rounded-2xl mb-6 bg-gray-100 dark:bg-gray-800 shadow-md">
-            <h1 className="text-3xl font-bold mb-4">Add New Car</h1>
-            <form onSubmit={handleSubmit} className="space-y-4">
-                {error && <div className="text-red-600">{error}</div>}
-                <input
-                    className="block w-full rounded-lg border border-gray-300 bg-white p-3 text-gray-900 focus:border-blue-500 focus:ring focus:ring-blue-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
-                    type="text"
-                    placeholder="Make"
-                    value={make}
-                    onChange={(e) => setMake(e.target.value)}
-                    required
-                />
-                <input
-                    className="block w-full rounded-lg border border-gray-300 bg-white p-3 text-gray-900 focus:border-blue-500 focus:ring focus:ring-blue-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
-                    type="text"
-                    placeholder="Model"
-                    value={model}
-                    onChange={(e) => setModel(e.target.value)}
-                    required
-                />
-                <input
-                    className="block w-full rounded-lg border border-gray-300 bg-white p-3 text-gray-900 focus:border-blue-500 focus:ring focus:ring-blue-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
-                    type="number"
-                    placeholder="Year"
-                    value={year}
-                    onChange={(e) => setYear(e.target.value)}
-                    required
-                />
-                <input
-                    className="block w-full rounded-lg border border-gray-300 bg-white p-3 text-gray-900 focus:border-blue-500 focus:ring focus:ring-blue-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
-                    type="text"
-                    placeholder="VIN"
-                    value={vin}
-                    onChange={(e) => setVin(e.target.value)}
-                    required
-                />
-                <button
+        <form onSubmit={handleSubmit} className="space-y-6">
+            {error && (
+                <Card className="border-destructive">
+                    <CardContent className="pt-6">
+                        <p className="text-destructive">{error}</p>
+                    </CardContent>
+                </Card>
+            )}
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                    <label htmlFor="make" className="text-sm font-medium">
+                        Make
+                    </label>
+                    <Input
+                        id="make"
+                        type="text"
+                        placeholder="e.g., Toyota, Ford, BMW"
+                        value={make}
+                        onChange={(e) => setMake(e.target.value)}
+                        required
+                    />
+                </div>
+                <div className="space-y-2">
+                    <label htmlFor="model" className="text-sm font-medium">
+                        Model
+                    </label>
+                    <Input
+                        id="model"
+                        type="text"
+                        placeholder="e.g., Camry, Focus, X5"
+                        value={model}
+                        onChange={(e) => setModel(e.target.value)}
+                        required
+                    />
+                </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                    <label htmlFor="year" className="text-sm font-medium">
+                        Year
+                    </label>
+                    <Input
+                        id="year"
+                        type="number"
+                        placeholder="e.g., 2020"
+                        value={year}
+                        onChange={(e) => setYear(e.target.value)}
+                        min="1900"
+                        max="2030"
+                        required
+                    />
+                </div>
+                <div className="space-y-2">
+                    <label htmlFor="vin" className="text-sm font-medium">
+                        VIN (Vehicle Identification Number)
+                    </label>
+                    <Input
+                        id="vin"
+                        type="text"
+                        placeholder="17-character VIN"
+                        value={vin}
+                        onChange={(e) => setVin(e.target.value)}
+                        maxLength="17"
+                        required
+                    />
+                </div>
+            </div>
+
+            <div className="flex gap-3 pt-4">
+                <Button
                     type="submit"
-                    className="w-full bg-blue-600 text-white px-4 py-3 rounded-lg hover:bg-blue-700 transition-colors"
+                    className="flex-1"
+                    disabled={isLoading}
                 >
-                    Add Car
-                </button>
-            </form>
-        </div>
+                    {isLoading ? (
+                        <>
+                            <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                            Adding Car...
+                        </>
+                    ) : (
+                        <>
+                            <Plus className="h-4 w-4 mr-2" />
+                            Add Car
+                        </>
+                    )}
+                </Button>
+            </div>
+        </form>
     );
 }
 

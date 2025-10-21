@@ -1,6 +1,12 @@
 // src/components/ECUCodes.jsx
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button-component";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
+import { Plus, Edit, Trash2, CheckCircle, Clock, Wrench } from "lucide-react";
+import { cn } from "@/lib/utils";
 axios.defaults.baseURL = "http://localhost:5257";
 
 export default function ECUCodes({ carId }) {
@@ -109,139 +115,147 @@ export default function ECUCodes({ carId }) {
     };
 
     return (
-        <div className="mt-6 bg-gray-800 p-4 rounded-lg">
-            <div className="flex items-center justify-between mb-3">
-                <h2 className="text-lg font-semibold text-white">ECU Error Codes</h2>
-                <button
+        <Card className="w-full max-w-4xl mx-auto">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
+                <CardTitle className="text-lg font-semibold">ECU Error Codes</CardTitle>
+                <Button
                     onClick={() => setShowForm(!showForm)}
-                    className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
+                    variant="outline"
+                    size="sm"
                 >
+                    <Plus className="h-4 w-4 mr-2" />
                     {showForm ? "Cancel" : "Add Code"}
-                </button>
-            </div>
+                </Button>
+            </CardHeader>
 
-            {showForm && (
-                <div className="mb-4 grid grid-cols-1 sm:grid-cols-2 gap-2">
-                    <input
-                        className="p-2 rounded bg-gray-700 text-white w-full"
-                        placeholder="Code (e.g. P0301)"
-                        value={newCode.code}
-                        onChange={(e) => setNewCode({ ...newCode, code: e.target.value })}
-                    />
-                    <input
-                        className="p-2 rounded bg-gray-700 text-white w-full"
-                        placeholder="Description"
-                        value={newCode.description}
-                        onChange={(e) =>
-                            setNewCode({ ...newCode, description: e.target.value })
-                        }
-                    />
-                    <div className="col-span-2 flex gap-2 justify-end">
-                        <button
-                            onClick={() => setShowForm(false)}
-                            className="bg-blue-500 text-white px-3 py-2 rounded hover:bg-blue-600"
-                        >
-                            Cancel
-                        </button>
-                        <button
-                            onClick={addCode}
-                            className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
-                        >
-                            Save
-                        </button>
+            <CardContent className="space-y-4">
+                {showForm && (
+                    <div className="mb-6 space-y-4 p-4 border rounded-lg bg-muted/50">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <Input
+                                placeholder="Code (e.g. P0301)"
+                                value={newCode.code}
+                                onChange={(e) => setNewCode({ ...newCode, code: e.target.value })}
+                            />
+                            <Input
+                                placeholder="Description"
+                                value={newCode.description}
+                                onChange={(e) =>
+                                    setNewCode({ ...newCode, description: e.target.value })
+                                }
+                            />
+                        </div>
+                        <div className="flex gap-2 justify-end">
+                            <Button
+                                onClick={() => setShowForm(false)}
+                                variant="outline"
+                            >
+                                Cancel
+                            </Button>
+                            <Button
+                                onClick={addCode}
+                                className="bg-green-600 hover:bg-green-700"
+                            >
+                                Save Code
+                            </Button>
+                        </div>
                     </div>
-                </div>
-            )}
+                )}
 
-            {Array.isArray(codes) && codes.length > 0 ? (
-                <ul className="divide-y divide-gray-700">
-                    {codes.map((c) => (
-                        <li key={c.id} className="py-3">
-                            {editingCode === c.id ? (
-                                // Edit form
-                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                                    <input
-                                        className="p-2 rounded bg-gray-700 text-white w-full"
-                                        placeholder="Code (e.g. P0301)"
-                                        value={editForm.code}
-                                        onChange={(e) => setEditForm({ ...editForm, code: e.target.value })}
-                                    />
-                                    <input
-                                        className="p-2 rounded bg-gray-700 text-white w-full"
-                                        placeholder="Description"
-                                        value={editForm.description}
-                                        onChange={(e) => setEditForm({ ...editForm, description: e.target.value })}
-                                    />
-                                    <select
-                                        className="p-2 rounded bg-gray-700 text-white w-full"
-                                        value={editForm.status}
-                                        onChange={(e) => setEditForm({ ...editForm, status: e.target.value })}
-                                    >
-                                        <option value="Pending">Pending</option>
-                                        <option value="Resolved">Resolved</option>
-                                    </select>
-                                    <div className="col-span-2 flex gap-2 justify-end">
-                                        <button
-                                            onClick={cancelEdit}
-                                            className="bg-gray-500 text-white px-3 py-2 rounded hover:bg-gray-600"
-                                        >
-                                            Cancel
-                                        </button>
-                                        <button
-                                            onClick={updateCode}
-                                            className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
-                                        >
-                                            Save
-                                        </button>
-                                    </div>
-                                </div>
-                            ) : (
-                                // Display mode
-                                <div className="flex justify-between items-center">
-                                    <div className="flex-1">
-                                        <div className="flex items-center gap-2 mb-1">
-                                            <span className="font-semibold text-white">{c.code}</span>
-                                            <span className="text-gray-300">{c.description}</span>
+                {Array.isArray(codes) && codes.length > 0 ? (
+                    <div className="space-y-4">
+                        {codes.map((c) => (
+                            <Card key={c.id} className="min-h-[120px]">
+                                <CardContent className="pt-6">
+                                    {editingCode === c.id ? (
+                                        // Edit form
+                                        <div className="space-y-4">
+                                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                                <Input
+                                                    placeholder="Code (e.g. P0301)"
+                                                    value={editForm.code}
+                                                    onChange={(e) => setEditForm({ ...editForm, code: e.target.value })}
+                                                />
+                                                <Input
+                                                    placeholder="Description"
+                                                    value={editForm.description}
+                                                    onChange={(e) => setEditForm({ ...editForm, description: e.target.value })}
+                                                />
+                                            </div>
+                                            <div className="flex gap-2 justify-end">
+                                                <Button
+                                                    onClick={cancelEdit}
+                                                    variant="outline"
+                                                >
+                                                    Cancel
+                                                </Button>
+                                                <Button
+                                                    onClick={updateCode}
+                                                    className="bg-green-600 hover:bg-green-700"
+                                                >
+                                                    Save Changes
+                                                </Button>
+                                            </div>
                                         </div>
-                                        <div className="text-xs text-gray-400">
-                                            Logged: {new Date(c.loggedDate).toLocaleDateString()}
+                                    ) : (
+                                        // Display mode
+                                        <div className="flex justify-between items-start min-h-[80px]">
+                                            <div className="flex-1 pr-4">
+                                                <div className="flex items-center gap-2 mb-3">
+                                                    <span className="font-semibold text-lg">{c.code}</span>
+                                                    <Badge 
+                                                        variant={c.status === "Resolved" ? "default" : "secondary"}
+                                                        className={cn(
+                                                            "cursor-pointer hover:opacity-80",
+                                                            c.status === "Resolved" 
+                                                                ? "bg-green-600 hover:bg-green-700" 
+                                                                : "bg-yellow-600 hover:bg-yellow-700"
+                                                        )}
+                                                        onClick={() => toggleStatus(c)}
+                                                    >
+                                                        {c.status === "Resolved" ? (
+                                                            <CheckCircle className="h-3 w-3 mr-1" />
+                                                        ) : (
+                                                            <Clock className="h-3 w-3 mr-1" />
+                                                        )}
+                                                        {c.status}
+                                                    </Badge>
+                                                </div>
+                                                <p className="text-muted-foreground mb-2 break-words">{c.description}</p>
+                                                <p className="text-xs text-muted-foreground">
+                                                    Logged: {new Date(c.loggedDate).toLocaleDateString()}
+                                                </p>
+                                            </div>
+                                            <div className="flex items-center gap-2 flex-shrink-0">
+                                                <Button
+                                                    onClick={() => startEdit(c)}
+                                                    variant="outline"
+                                                    size="sm"
+                                                >
+                                                    <Edit className="h-4 w-4" />
+                                                </Button>
+                                                <Button
+                                                    onClick={() => deleteCode(c.id)}
+                                                    variant="destructive"
+                                                    size="sm"
+                                                >
+                                                    <Trash2 className="h-4 w-4" />
+                                                </Button>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div className="flex items-center gap-2">
-                                        <button
-                                            onClick={() => toggleStatus(c)}
-                                            className={`text-sm px-2 py-1 rounded cursor-pointer hover:opacity-80 ${
-                                                c.status === "Resolved"
-                                                    ? "bg-green-700 text-green-200"
-                                                    : "bg-yellow-700 text-yellow-200"
-                                            }`}
-                                            title={`Click to change to ${c.status === "Pending" ? "Resolved" : "Pending"}`}
-                                        >
-                                            {c.status}
-                                        </button>
-                                        <button
-                                            onClick={() => startEdit(c)}
-                                            className="bg-blue-500 text-white px-2 py-1 rounded text-sm hover:bg-blue-600"
-                                            title="Edit ECU code"
-                                        >
-                                            ✏️
-                                        </button>
-                                        <button
-                                            onClick={() => deleteCode(c.id)}
-                                            className="bg-red-500 text-white px-2 py-1 rounded text-sm hover:bg-red-600"
-                                            title="Delete ECU code"
-                                        >
-                                            🗑️
-                                        </button>
-                                    </div>
-                                </div>
-                            )}
-                        </li>
-                    ))}
-                </ul>
-            ) : (
-                <p className="text-gray-400 italic">No ECU codes logged.</p>
-            )}
-        </div>
+                                    )}
+                                </CardContent>
+                            </Card>
+                        ))}
+                    </div>
+                ) : (
+                    <div className="text-center py-8 text-muted-foreground">
+                        <Wrench className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                        <p className="text-lg font-medium">No ECU codes logged</p>
+                        <p className="text-sm">Add your first error code to get started</p>
+                    </div>
+                )}
+            </CardContent>
+        </Card>
     );
 }

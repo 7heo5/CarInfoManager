@@ -2,6 +2,9 @@ import { useState, useEffect } from "react";
 import ServiceRecordItem from "./ServiceRecordItem";
 import AddServiceRecordForm from "./AddServiceRecordForm";
 import ECUCodes from "./ECUCodes";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+import { Wrench, Calendar } from "lucide-react";
 
 function ServiceHistory({ carId }) {
   const [serviceRecords, setServiceRecords] = useState([]);
@@ -58,37 +61,54 @@ function ServiceHistory({ carId }) {
   };
 
   return (
-    <div className="bg-gray-800 rounded-xl p-4 mt-4 text-white">
-      <h4 className="text-lg font-bold mb-3">Service History</h4>
+    <div className="space-y-6">
+      {/* Service History Card */}
+      <Card className="w-full">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Wrench className="h-5 w-5" />
+            Service History
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          {serviceRecords.length === 0 ? (
+            <div className="text-center py-8 text-muted-foreground">
+              <Calendar className="h-12 w-12 mx-auto mb-4 opacity-50" />
+              <p className="text-lg font-medium">No service records yet</p>
+              <p className="text-sm">Add your first service record to track maintenance</p>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {serviceRecords.map((record) => (
+                <ServiceRecordItem
+                  key={record.id}
+                  record={record}
+                  editingRecordId={editingRecordId}
+                  setEditingRecordId={setEditingRecordId}
+                  editForm={editForm}
+                  setEditForm={setEditForm}
+                  setServiceRecords={setServiceRecords}
+                  refreshServiceHistory={fetchServiceRecords}
+                />
+              ))}
+            </div>
+          )}
 
-      {serviceRecords.length === 0 ? (
-        <p className="italic text-gray-300">No service history yet.</p>
-      ) : (
-        <div className="space-y-3">
-          {serviceRecords.map((record) => (
-            <ServiceRecordItem
-              key={record.id}
-              record={record}
-              editingRecordId={editingRecordId}
-              setEditingRecordId={setEditingRecordId}
-              editForm={editForm}
-              setEditForm={setEditForm}
-              setServiceRecords={setServiceRecords}
-              refreshServiceHistory={fetchServiceRecords}
+          <Separator className="my-6" />
+
+          {/* Add New Service Record */}
+          <div className="space-y-4">
+            <h4 className="text-lg font-semibold">Add New Service Record</h4>
+            <AddServiceRecordForm
+              newRecord={newRecord}
+              onChange={handleRecordChange}
+              onSubmit={() => handleAddServiceRecord(carId)}
             />
-          ))}
-        </div>
-      )}
+          </div>
+        </CardContent>
+      </Card>
 
-      <div className="mt-6">
-        <h5 className="text-md font-semibold mb-2">Add New Record</h5>
-        <AddServiceRecordForm
-          newRecord={newRecord}
-          onChange={handleRecordChange}
-          onSubmit={() => handleAddServiceRecord(carId)}
-        />
-      </div>
-      <hr className="my-4 border-gray-600" />
+      {/* ECU Codes Card */}
       <ECUCodes carId={carId} />
     </div>
   );
