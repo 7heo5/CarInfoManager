@@ -12,7 +12,7 @@ function CarCard({ car, onViewServiceHistory, onDelete, onEdit, expanded }) {
       <Card className="hover:shadow-lg transition-shadow h-full min-h-[200px] flex flex-col">
         <CardHeader className="pb-3 flex-shrink-0">
           <div className="flex items-start gap-3">
-            <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-muted flex-shrink-0">
+            <div className="bg-zinc-700 flex h-12 w-12 items-center justify-center rounded-lg bg-muted flex-shrink-0">
               {getCarLogoComponent(car.make, "w-8 h-8")}
             </div>
             <div className="min-w-0 flex-1">
