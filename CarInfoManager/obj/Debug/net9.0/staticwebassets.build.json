@@ -1,12 +1,1 @@
-{
-  "Version": 1,
-  "Hash": "X9sEngibT8L6rJzwNUpSQbJv1LT1Ee9GN+mFGXw7oPY=",
-  "Source": "CarInfoManager",
-  "BasePath": "_content/CarInfoManager",
-  "Mode": "Default",
-  "ManifestType": "Build",
-  "ReferencedProjectsConfiguration": [],
-  "DiscoveryPatterns": [],
-  "Assets": [],
-  "Endpoints": []
-}
+{"Version":1,"Hash":"X9sEngibT8L6rJzwNUpSQbJv1LT1Ee9GN+mFGXw7oPY=","Source":"CarInfoManager","BasePath":"_content/CarInfoManager","Mode":"Default","ManifestType":"Build","ReferencedProjectsConfiguration":[],"DiscoveryPatterns":[],"Assets":[],"Endpoints":[]}
