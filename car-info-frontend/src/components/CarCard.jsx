@@ -1,14 +1,13 @@
 import React from "react";
-import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button-component";
 import { Badge } from "@/components/ui/badge";
-import { Edit, Trash2, Wrench, ChevronDown, ChevronUp } from "lucide-react";
+import { Edit, Trash2, Wrench, ChevronDown, ChevronUp, UserRound, Phone } from "lucide-react";
 import { getCarLogoComponent } from "@/components/CarLogos";
 
 function CarCard({ car, onViewServiceHistory, onDelete, onEdit, expanded }) {
   return (
-    <motion.div layout className="w-full">
+    <div className="w-full">
       <Card className="hover:shadow-lg transition-shadow h-full min-h-[200px] flex flex-col">
         <CardHeader className="pb-3 flex-shrink-0">
           <div className="flex items-start gap-3">
@@ -24,6 +23,20 @@ function CarCard({ car, onViewServiceHistory, onDelete, onEdit, expanded }) {
                   VIN: {car.vin.slice(0, 8)}...
                 </Badge>
               </div>
+              {car.customer && (
+                <div className="mt-3 space-y-1 text-sm text-muted-foreground">
+                  <p className="flex items-center gap-2">
+                    <UserRound className="h-4 w-4" />
+                    {car.customer.name}
+                  </p>
+                  {car.customer.phone && (
+                    <p className="flex items-center gap-2">
+                      <Phone className="h-4 w-4" />
+                      {car.customer.phone}
+                    </p>
+                  )}
+                </div>
+              )}
             </div>
           </div>
         </CardHeader>
@@ -70,7 +83,7 @@ function CarCard({ car, onViewServiceHistory, onDelete, onEdit, expanded }) {
           </div>
         </CardContent>
       </Card>
-    </motion.div>
+    </div>
   );
 }
 

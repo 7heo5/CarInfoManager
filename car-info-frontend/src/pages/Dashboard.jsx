@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button-component";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Plus } from "lucide-react";
 import { getCarLogoComponent } from "@/components/CarLogos";
+import { apiUrl } from "@/api/client";
 
 function Dashboard() {
   const [cars, setCars] = useState([]);
@@ -14,7 +15,7 @@ function Dashboard() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetch('http://localhost:5257/api/cars')
+    fetch(apiUrl('/api/cars'))
       .then((res) => {
         if (!res.ok) throw new Error("Failed to load cars.");
         return res.json();
@@ -27,7 +28,7 @@ function Dashboard() {
   }, []);
 
   const handleDelete = async (id) => {
-    const res = await fetch(`http://localhost:5257/api/cars/${id}`, {
+    const res = await fetch(apiUrl(`/api/cars/${id}`), {
       method: 'DELETE',
     });
 
@@ -47,14 +48,14 @@ function Dashboard() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
+          <h1 className="text-3xl font-bold tracking-tight">Workshop Records</h1>
           <p className="text-muted-foreground">
-            Manage your vehicle fleet and track maintenance
+            Manage customer vehicles, service history, and open diagnostic notes
           </p>
         </div>
         <Button onClick={() => navigate("/add")}>
           <Plus className="h-4 w-4 mr-2" />
-          Add New Car
+          Add Customer Vehicle
         </Button>
       </div>
 
@@ -95,13 +96,13 @@ function Dashboard() {
             <div className="flex h-16 w-16 items-center justify-center rounded-lg bg-muted mx-auto mb-4">
               {getCarLogoComponent('default', "w-12 h-12")}
             </div>
-            <h3 className="text-lg font-semibold mb-2">No cars added yet</h3>
+            <h3 className="text-lg font-semibold mb-2">No customer vehicles added yet</h3>
             <p className="text-muted-foreground mb-4">
-              Get started by adding your first vehicle to track
+              Start a workshop record by adding the first customer vehicle
             </p>
             <Button onClick={() => navigate("/add")}>
               <Plus className="h-4 w-4 mr-2" />
-              Add Your First Car
+              Add First Vehicle
             </Button>
           </CardContent>
         </Card>

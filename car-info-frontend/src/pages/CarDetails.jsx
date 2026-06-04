@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { apiUrl } from "@/api/client";
 
 const CarDetails = () => {
     const [car, setCar] = useState(null);
@@ -8,7 +9,7 @@ const CarDetails = () => {
     useEffect(() => {
         const fetchCar = async () => {
             try{
-                const response = await fetch("http://localhost:5257/api/cars");
+                const response = await fetch(apiUrl("/api/cars"));
                 if (!response.ok) {
                     throw new Error("Failed to fetch car details");
                 }

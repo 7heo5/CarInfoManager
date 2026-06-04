@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button-component";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import { Plus, Loader2 } from "lucide-react";
+import { apiUrl } from "@/api/client";
 
 function AddCarForm({ onCarAdded }) {
     // Track form field values
@@ -10,6 +11,10 @@ function AddCarForm({ onCarAdded }) {
     const [model, setModel] = useState('');
     const [year, setYear] = useState('');
     const [vin, setVin] = useState('');
+    const [customerName, setCustomerName] = useState('');
+    const [customerPhone, setCustomerPhone] = useState('');
+    const [customerEmail, setCustomerEmail] = useState('');
+    const [customerNotes, setCustomerNotes] = useState('');
     const [error, setError] = useState('');
     const [isLoading, setIsLoading] = useState(false);
 
@@ -18,10 +23,21 @@ function AddCarForm({ onCarAdded }) {
         setIsLoading(true);
 
         //Create car object
-        const newCar = { make, model, year: parseInt(year), vin };
+        const newCar = {
+            make,
+            model,
+            year: parseInt(year),
+            vin,
+            customer: {
+                name: customerName,
+                phone: customerPhone,
+                email: customerEmail,
+                notes: customerNotes,
+            },
+        };
 
         try {
-            const res = await fetch('http://localhost:5257/api/cars', {
+            const res = await fetch(apiUrl('/api/cars'), {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -41,6 +57,10 @@ function AddCarForm({ onCarAdded }) {
             setModel('');
             setYear('');
             setVin('');
+            setCustomerName('');
+            setCustomerPhone('');
+            setCustomerEmail('');
+            setCustomerNotes('');
             setError('');
         } catch (err) {
             setError(err.message);
@@ -59,7 +79,67 @@ function AddCarForm({ onCarAdded }) {
                 </Card>
             )}
             
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Customer Details</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                        <label htmlFor="customerName" className="text-sm font-medium">
+                            Customer Name
+                        </label>
+                        <Input
+                            id="customerName"
+                            type="text"
+                            placeholder="e.g., Taylor Motors or Sam Green"
+                            value={customerName}
+                            onChange={(e) => setCustomerName(e.target.value)}
+                            required
+                        />
+                    </div>
+                    <div className="space-y-2">
+                        <label htmlFor="customerPhone" className="text-sm font-medium">
+                            Phone
+                        </label>
+                        <Input
+                            id="customerPhone"
+                            type="tel"
+                            placeholder="Customer contact number"
+                            value={customerPhone}
+                            onChange={(e) => setCustomerPhone(e.target.value)}
+                        />
+                    </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                        <label htmlFor="customerEmail" className="text-sm font-medium">
+                            Email
+                        </label>
+                        <Input
+                            id="customerEmail"
+                            type="email"
+                            placeholder="customer@example.com"
+                            value={customerEmail}
+                            onChange={(e) => setCustomerEmail(e.target.value)}
+                        />
+                    </div>
+                    <div className="space-y-2">
+                        <label htmlFor="customerNotes" className="text-sm font-medium">
+                            Customer Notes
+                        </label>
+                        <Input
+                            id="customerNotes"
+                            type="text"
+                            placeholder="Preferred contact, fleet account, etc."
+                            value={customerNotes}
+                            onChange={(e) => setCustomerNotes(e.target.value)}
+                        />
+                    </div>
+                </div>
+            </div>
+
+            <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Vehicle Details</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
                     <label htmlFor="make" className="text-sm font-medium">
                         Make
@@ -88,7 +168,7 @@ function AddCarForm({ onCarAdded }) {
                 </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
                     <label htmlFor="year" className="text-sm font-medium">
                         Year
@@ -119,6 +199,7 @@ function AddCarForm({ onCarAdded }) {
                     />
                 </div>
             </div>
+            </div>
 
             <div className="flex gap-3 pt-4">
                 <Button
@@ -129,12 +210,12 @@ function AddCarForm({ onCarAdded }) {
                     {isLoading ? (
                         <>
                             <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                            Adding Car...
+                            Adding Vehicle...
                         </>
                     ) : (
                         <>
                             <Plus className="h-4 w-4 mr-2" />
-                            Add Car
+                            Add Vehicle Record
                         </>
                     )}
                 </Button>

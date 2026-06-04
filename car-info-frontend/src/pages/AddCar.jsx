@@ -24,9 +24,9 @@ function AddCar() {
           Back to Dashboard
         </Button>
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Add New Car</h1>
+          <h1 className="text-3xl font-bold tracking-tight">Add Customer Vehicle</h1>
           <p className="text-muted-foreground">
-            Add a new vehicle to your fleet
+            Create a workshop record for a customer vehicle
           </p>
         </div>
       </div>
@@ -36,7 +36,7 @@ function AddCar() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Car className="h-5 w-5" />
-            Vehicle Information
+            Customer and Vehicle Information
           </CardTitle>
         </CardHeader>
         <CardContent>

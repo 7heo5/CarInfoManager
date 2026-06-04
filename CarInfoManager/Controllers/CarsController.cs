@@ -24,14 +24,18 @@ public class CarsController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<IEnumerable<Car>>> GetCars()
     {
-        return await _context.Cars.ToListAsync();
+        return await _context.Cars
+            .Include(car => car.Customer)
+            .ToListAsync();
     }
 
     //GET: api/cars/5
     [HttpGet("{id}")]
     public async Task<ActionResult<Car>> GetCar(int id)
     {
-        var car = await _context.Cars.FindAsync(id);
+        var car = await _context.Cars
+            .Include(c => c.Customer)
+            .FirstOrDefaultAsync(c => c.Id == id);
 
         if (car == null)
         {
@@ -46,11 +50,16 @@ public class CarsController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<Car>> PostCar(Car car)
     {
+        if (car.Customer != null)
+        {
+            car.CustomerId = null;
+        }
+
         _context.Cars.Add(car);
         await _context.SaveChangesAsync();
 
         // Returns HTTP 201 with the created car
-        return CreatedAtAction(nameof(GetCars), new {id = car.Id}, car);
+        return CreatedAtAction(nameof(GetCar), new {id = car.Id}, car);
     }
 
     // PUT: api/cars/5
@@ -74,6 +83,28 @@ public class CarsController : ControllerBase
         existingCar.Model = updatedCar.Model;
         existingCar.Year = updatedCar.Year;
         existingCar.VIN = updatedCar.VIN;
+        existingCar.CustomerId = updatedCar.CustomerId;
+
+        if (updatedCar.Customer != null)
+        {
+            if (existingCar.CustomerId.HasValue)
+            {
+                var existingCustomer = await _context.Customers.FindAsync(existingCar.CustomerId.Value);
+                if (existingCustomer == null)
+                {
+                    return BadRequest("Customer was not found.");
+                }
+
+                existingCustomer.Name = updatedCar.Customer.Name;
+                existingCustomer.Phone = updatedCar.Customer.Phone;
+                existingCustomer.Email = updatedCar.Customer.Email;
+                existingCustomer.Notes = updatedCar.Customer.Notes;
+            }
+            else
+            {
+                existingCar.Customer = updatedCar.Customer;
+            }
+        }
 
         await _context.SaveChangesAsync();
         return NoContent(); // 204 success response with no content

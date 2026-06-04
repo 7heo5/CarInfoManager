@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { 
   Plus, 
-  Settings, 
   BarChart3, 
   Wrench,
   ChevronLeft,
@@ -12,9 +11,8 @@ import { cn } from "@/lib/utils";
 import { getCarLogoComponent } from "@/components/CarLogos";
 
 const navigation = [
-  { name: "Dashboard", href: "/", icon: BarChart3 },
-  { name: "Add Car", href: "/add", icon: Plus },
-  { name: "Settings", href: "/settings", icon: Settings },
+  { name: "Records", href: "/", icon: BarChart3 },
+  { name: "Add Vehicle", href: "/add", icon: Plus },
 ];
 
 export default function Sidebar() {
@@ -34,8 +32,8 @@ export default function Sidebar() {
           </div>
           {!collapsed && (
             <div className="flex flex-col">
-              <span className="text-sm font-semibold">Car Service Manager</span>
-              <span className="text-xs text-muted-foreground">Vehicle Tracker</span>
+              <span className="text-sm font-semibold">Workshop Records</span>
+              <span className="text-xs text-muted-foreground">Customer Vehicles</span>
             </div>
           )}
         </div>
@@ -77,7 +75,7 @@ export default function Sidebar() {
       <div className="p-4 border-t">
         <div className="flex items-center gap-2 text-xs text-muted-foreground">
           <Wrench className="h-3 w-3" />
-          {!collapsed && <span>CarInfo Manager v1.0</span>}
+          {!collapsed && <span>Garage MVP v1.0</span>}
         </div>
       </div>
     </div>

@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button-component";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowLeft, Car, Loader2, Save } from "lucide-react";
+import { apiUrl } from "@/api/client";
 
 function EditCar() {
     const { id } = useParams();
@@ -13,20 +14,33 @@ function EditCar() {
     const [model, setModel] = useState("");
     const [year, setYear] = useState("");
     const [vin, setVin] = useState("");
+    const [customerId, setCustomerId] = useState(null);
+    const [customerName, setCustomerName] = useState("");
+    const [customerPhone, setCustomerPhone] = useState("");
+    const [customerEmail, setCustomerEmail] = useState("");
+    const [customerNotes, setCustomerNotes] = useState("");
     const [isLoading, setIsLoading] = useState(false);
     const [isLoadingData, setIsLoadingData] = useState(true);
 
     useEffect(() => {
-        fetch(`http://localhost:5257/api/cars/${id}`)
-            .then((res) => res.json())
+        fetch(apiUrl(`/api/cars/${id}`))
+            .then((res) => {
+                if (!res.ok) throw new Error("Failed to load car.");
+                return res.json();
+            })
             .then((data) => {
                 setMake(data.make);
                 setModel(data.model);
                 setYear(data.year);
                 setVin(data.vin);
+                setCustomerId(data.customerId ?? data.customer?.id ?? null);
+                setCustomerName(data.customer?.name ?? "");
+                setCustomerPhone(data.customer?.phone ?? "");
+                setCustomerEmail(data.customer?.email ?? "");
+                setCustomerNotes(data.customer?.notes ?? "");
                 setIsLoadingData(false);
             })
-            .catch((err) => {
+            .catch(() => {
                 setError("Failed to load car.");
                 setIsLoadingData(false);
             });
@@ -36,22 +50,35 @@ function EditCar() {
         e.preventDefault();
         setIsLoading(true);
         
+        const customer = {
+            name: customerName,
+            phone: customerPhone,
+            email: customerEmail,
+            notes: customerNotes,
+        };
+
+        if (customerId !== null) {
+            customer.id = customerId;
+        }
+
         const updatedCar = {
             id: parseInt(id),
             make,
             model,
             year: parseInt(year),
-            vin
+            vin,
+            customerId,
+            customer,
         };
 
         try {
-            const res = await fetch(`http://localhost:5257/api/cars/${id}`, {
+            const res = await fetch(apiUrl(`/api/cars/${id}`), {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(updatedCar),
             });
 
-            if (!res.ok) throw new Error("Failed to update car.");
+            if (!res.ok) throw new Error("Failed to update vehicle record.");
             navigate('/');
         } catch (err) {
             setError(err.message);
@@ -81,9 +108,9 @@ function EditCar() {
                     Back to Dashboard
                 </Button>
                 <div>
-                    <h1 className="text-3xl font-bold tracking-tight">Edit Car</h1>
+          <h1 className="text-3xl font-bold tracking-tight">Edit Vehicle Record</h1>
                     <p className="text-muted-foreground">
-                        Update vehicle information
+                        Update customer and vehicle information
                     </p>
                 </div>
             </div>
@@ -93,7 +120,7 @@ function EditCar() {
                 <CardHeader>
                     <CardTitle className="flex items-center gap-2">
                         <Car className="h-5 w-5" />
-                        Vehicle Information
+                        Customer and Vehicle Information
                     </CardTitle>
                 </CardHeader>
                 <CardContent>
@@ -106,7 +133,63 @@ function EditCar() {
                             </Card>
                         )}
                         
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="space-y-4">
+                            <h3 className="text-lg font-semibold">Customer Details</h3>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div className="space-y-2">
+                                    <label htmlFor="customerName" className="text-sm font-medium">
+                                        Customer Name
+                                    </label>
+                                    <Input
+                                        id="customerName"
+                                        type="text"
+                                        value={customerName}
+                                        onChange={(e) => setCustomerName(e.target.value)}
+                                        required
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <label htmlFor="customerPhone" className="text-sm font-medium">
+                                        Phone
+                                    </label>
+                                    <Input
+                                        id="customerPhone"
+                                        type="tel"
+                                        value={customerPhone}
+                                        onChange={(e) => setCustomerPhone(e.target.value)}
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div className="space-y-2">
+                                    <label htmlFor="customerEmail" className="text-sm font-medium">
+                                        Email
+                                    </label>
+                                    <Input
+                                        id="customerEmail"
+                                        type="email"
+                                        value={customerEmail}
+                                        onChange={(e) => setCustomerEmail(e.target.value)}
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <label htmlFor="customerNotes" className="text-sm font-medium">
+                                        Customer Notes
+                                    </label>
+                                    <Input
+                                        id="customerNotes"
+                                        type="text"
+                                        value={customerNotes}
+                                        onChange={(e) => setCustomerNotes(e.target.value)}
+                                    />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="space-y-4">
+                            <h3 className="text-lg font-semibold">Vehicle Details</h3>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div className="space-y-2">
                                 <label htmlFor="make" className="text-sm font-medium">
                                     Make
@@ -135,7 +218,7 @@ function EditCar() {
                             </div>
                         </div>
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div className="space-y-2">
                                 <label htmlFor="year" className="text-sm font-medium">
                                     Year
@@ -166,6 +249,7 @@ function EditCar() {
                                 />
                             </div>
                         </div>
+                        </div>
 
                         <div className="flex gap-3 pt-4">
                             <Button
@@ -181,7 +265,7 @@ function EditCar() {
                                 ) : (
                                     <>
                                         <Save className="h-4 w-4 mr-2" />
-                                        Update Car
+                                        Update Vehicle Record
                                     </>
                                 )}
                             </Button>

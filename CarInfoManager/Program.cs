@@ -37,7 +37,7 @@ if (app.Environment.IsDevelopment())
 using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<CarInfoContext>();
-    dbContext.Database.EnsureCreated(); // Create DB if it doesn't exist
+    dbContext.Database.Migrate(); // Apply schema changes before seeding
     DbSeeder.Seed(dbContext); // Add sample data if needed
 }
 

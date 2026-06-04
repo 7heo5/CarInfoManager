@@ -1,10 +1,11 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import ServiceRecordItem from "./ServiceRecordItem";
 import AddServiceRecordForm from "./AddServiceRecordForm";
 import ECUCodes from "./ECUCodes";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Wrench, Calendar } from "lucide-react";
+import { apiUrl } from "@/api/client";
 
 function ServiceHistory({ carId }) {
   const [serviceRecords, setServiceRecords] = useState([]);
@@ -17,20 +18,20 @@ function ServiceHistory({ carId }) {
   const [editingRecordId, setEditingRecordId] = useState(null);
   const [editForm, setEditForm] = useState({});
 
-  const fetchServiceRecords = async () => {
+  const fetchServiceRecords = useCallback(async () => {
     try {
-      const res = await fetch(`http://localhost:5257/api/servicerecords/car/${carId}`);
+      const res = await fetch(apiUrl(`/api/servicerecords/car/${carId}`));
       if (!res.ok) throw new Error("Failed to fetch service records");
       const data = await res.json();
       setServiceRecords(data);
     } catch (error) {
       console.error("Error loading service records:", error);
     }
-  };
+  }, [carId]);
 
   useEffect(() => {
     fetchServiceRecords();
-  }, [carId]);
+  }, [fetchServiceRecords]);
 
   const handleRecordChange = (e) => {
     const { name, value } = e.target;
@@ -46,7 +47,7 @@ function ServiceHistory({ carId }) {
     };
 
     try {
-      const res = await fetch('http://localhost:5257/api/servicerecords', {
+      const res = await fetch(apiUrl('/api/servicerecords'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(recordToSend),

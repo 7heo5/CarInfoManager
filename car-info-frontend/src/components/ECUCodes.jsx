@@ -1,13 +1,12 @@
 // src/components/ECUCodes.jsx
 import { useState, useEffect } from "react";
-import axios from "axios";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button-component";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Plus, Edit, Trash2, CheckCircle, Clock, Wrench } from "lucide-react";
 import { cn } from "@/lib/utils";
-axios.defaults.baseURL = "http://localhost:5257";
+import { apiClient } from "@/api/client";
 
 export default function ECUCodes({ carId }) {
     const [codes, setCodes] = useState([]);
@@ -19,7 +18,7 @@ export default function ECUCodes({ carId }) {
     useEffect(() => {
         if (!carId) return;
 
-        axios
+        apiClient
             .get(`/api/ECUCodes/${carId}`)
             .then((res) => {
                 // Ensure we always store an array
@@ -35,7 +34,7 @@ export default function ECUCodes({ carId }) {
 
     const addCode = async () => {
         try {
-            const res = await axios.post("/api/ECUCodes", {
+            const res = await apiClient.post("/api/ECUCodes", {
                 carId,
                 code: newCode.code,
                 description: newCode.description,
@@ -65,7 +64,7 @@ export default function ECUCodes({ carId }) {
 
     const updateCode = async () => {
         try {
-            await axios.put(`/api/ECUCodes/${editingCode}`, {
+            await apiClient.put(`/api/ECUCodes/${editingCode}`, {
                 code: editForm.code,
                 description: editForm.description,
                 status: editForm.status,
@@ -88,7 +87,7 @@ export default function ECUCodes({ carId }) {
         }
         
         try {
-            await axios.delete(`/api/ECUCodes/${id}`);
+            await apiClient.delete(`/api/ECUCodes/${id}`);
             setCodes(codes.filter(c => c.id !== id));
         } catch (err) {
             console.error("Error deleting ECU code:", err);
@@ -98,7 +97,7 @@ export default function ECUCodes({ carId }) {
     const toggleStatus = async (code) => {
         const newStatus = code.status === "Pending" ? "Resolved" : "Pending";
         try {
-            await axios.put(`/api/ECUCodes/${code.id}`, {
+            await apiClient.put(`/api/ECUCodes/${code.id}`, {
                 code: code.code,
                 description: code.description,
                 status: newStatus,

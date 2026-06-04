@@ -46,7 +46,6 @@ C:\Users\tsylv\Projects\CarInfoManager\CarInfoManager\CarInfoManager\bin\Debug\n
 C:\Users\tsylv\Projects\CarInfoManager\CarInfoManager\CarInfoManager\bin\Debug\net9.0\System.Composition.Hosting.dll
 C:\Users\tsylv\Projects\CarInfoManager\CarInfoManager\CarInfoManager\bin\Debug\net9.0\System.Composition.Runtime.dll
 C:\Users\tsylv\Projects\CarInfoManager\CarInfoManager\CarInfoManager\bin\Debug\net9.0\System.Composition.TypedParts.dll
-C:\Users\tsylv\Projects\CarInfoManager\CarInfoManager\CarInfoManager\bin\Debug\net9.0\System.Text.Json.dll
 C:\Users\tsylv\Projects\CarInfoManager\CarInfoManager\CarInfoManager\bin\Debug\net9.0\cs\Microsoft.CodeAnalysis.resources.dll
 C:\Users\tsylv\Projects\CarInfoManager\CarInfoManager\CarInfoManager\bin\Debug\net9.0\de\Microsoft.CodeAnalysis.resources.dll
 C:\Users\tsylv\Projects\CarInfoManager\CarInfoManager\CarInfoManager\bin\Debug\net9.0\es\Microsoft.CodeAnalysis.resources.dll
@@ -156,3 +155,4 @@ C:\Users\tsylv\Projects\CarInfoManager\CarInfoManager\CarInfoManager\obj\Debug\n
 C:\Users\tsylv\Projects\CarInfoManager\CarInfoManager\CarInfoManager\obj\Debug\net9.0\CarInfoManager.pdb
 C:\Users\tsylv\Projects\CarInfoManager\CarInfoManager\CarInfoManager\obj\Debug\net9.0\CarInfoManager.genruntimeconfig.cache
 C:\Users\tsylv\Projects\CarInfoManager\CarInfoManager\CarInfoManager\obj\Debug\net9.0\ref\CarInfoManager.dll
+C:\Users\tsylv\Projects\CarInfoManager\CarInfoManager\CarInfoManager\obj\Debug\net9.0\swae.build.ex.cache

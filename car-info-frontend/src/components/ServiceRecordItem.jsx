@@ -3,6 +3,7 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Edit, Trash2, Save, X, Calendar, DollarSign, FileText } from "lucide-react";
+import { apiUrl } from "@/api/client";
 
 function ServiceRecordItem({ record, editingRecordId, setEditingRecordId, editForm, setEditForm, setServiceRecords }) {
   const handleEditChange = (e) => {
@@ -18,15 +19,14 @@ function ServiceRecordItem({ record, editingRecordId, setEditingRecordId, editFo
       date: new Date(editForm.date).toISOString(),
     };
 
-    const res = await fetch(`http://localhost:5257/api/servicerecords/${editingRecordId}`, {
+    const res = await fetch(apiUrl(`/api/servicerecords/${editingRecordId}`), {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(updated),
     });
 
     if (res.ok) {
-      const result = await res.json();
-      setServiceRecords((prev) => prev.map((r) => (r.id === result.id ? result : r)));
+      setServiceRecords((prev) => prev.map((r) => (r.id === updated.id ? updated : r)));
       setEditingRecordId(null);
     } else {
       alert("Failed to update service record.");
@@ -38,7 +38,7 @@ function ServiceRecordItem({ record, editingRecordId, setEditingRecordId, editFo
       return;
     }
 
-    const res = await fetch(`http://localhost:5257/api/servicerecords/${record.id}`, { method: "DELETE" });
+    const res = await fetch(apiUrl(`/api/servicerecords/${record.id}`), { method: "DELETE" });
     if (res.ok) {
       setServiceRecords((prev) => prev.filter((r) => r.id !== record.id));
     } else {

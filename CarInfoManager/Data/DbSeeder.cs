@@ -10,10 +10,16 @@ public static class DbSeeder
     {
         if (context.Cars.Any()) return; // If data already exists, skip
 
+        var customers = new List<Customer>
+        {
+            new Customer { Name = "Alex Morgan", Phone = "07700 900123", Email = "alex@example.com", Notes = "Prefers text updates" },
+            new Customer { Name = "Riverdale Plumbing", Phone = "07700 900456", Email = "fleet@riverdale.example", Notes = "Small van fleet customer" }
+        };
+
         var cars = new List<Car>()
         {
-            new Car {Make = "Mini", Model = "Cooper", Year = 2009, VIN = "1NXBR32E85Z123456"},
-            new Car {Make = "BMW", Model = "M2", Year = 2019, VIN = "3FADP4BJ0FM123456"}
+            new Car {Customer = customers[0], Make = "Mini", Model = "Cooper", Year = 2009, VIN = "1NXBR32E85Z123456"},
+            new Car {Customer = customers[1], Make = "BMW", Model = "M2", Year = 2019, VIN = "3FADP4BJ0FM123456"}
         };
 
         var serviceRecords = new List<ServiceRecord>
@@ -22,6 +28,7 @@ public static class DbSeeder
             new ServiceRecord {Car = cars[1], Date = DateTime.Today.AddMonths(-3), ServiceType = "Brake Pads", Cost = 120.00m, Notes = "Replaced front brake pads"}
         };
 
+        context.Customers.AddRange(customers);
         context.Cars.AddRange(cars);
         context.ServiceRecords.AddRange(serviceRecords);
 
