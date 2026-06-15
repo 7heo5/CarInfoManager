@@ -1,6 +1,6 @@
 // Car logo mapping for different makes
-export const getCarLogo = (make) => {
-  const logoMap = {
+export const getCarLogo = (make?: string | null) => {
+  const logoMap: Record<string, string> = {
     // German brands
     'BMW': '🔵',
     'Mercedes': '⭐',
@@ -83,8 +83,8 @@ export const getCarLogo = (make) => {
   return logoMap['default'];
 };
 
-export const getCarLogoColor = (make) => {
-  const colorMap = {
+export const getCarLogoColor = (make?: string | null) => {
+  const colorMap: Record<string, string> = {
     'BMW': 'text-blue-500',
     'Mercedes': 'text-silver-500',
     'Mercedes-Benz': 'text-silver-500',

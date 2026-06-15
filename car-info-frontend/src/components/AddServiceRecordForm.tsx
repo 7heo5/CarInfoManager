@@ -3,11 +3,18 @@ import { Button } from "@/components/ui/button-component";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import { Plus, Loader2 } from "lucide-react";
+import type { ServiceRecordForm } from "@/types";
 
-function AddServiceRecordForm({ newRecord, onChange, onSubmit }) {
+interface AddServiceRecordFormProps {
+  newRecord: ServiceRecordForm;
+  onChange: (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
+  onSubmit: () => Promise<void> | void;
+}
+
+function AddServiceRecordForm({ newRecord, onChange, onSubmit }: AddServiceRecordFormProps) {
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
     try {

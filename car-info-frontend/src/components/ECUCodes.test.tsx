@@ -15,11 +15,11 @@ vi.mock("@/api/client", () => ({
 
 describe("ECUCodes", () => {
   beforeEach(() => {
-    apiClient.get.mockResolvedValue({ data: [] });
+    vi.mocked(apiClient.get).mockResolvedValue({ data: [] });
   });
 
   it("loads and displays ECU codes for a vehicle", async () => {
-    apiClient.get.mockResolvedValueOnce({
+    vi.mocked(apiClient.get).mockResolvedValueOnce({
       data: [
         {
           id: 5,
@@ -40,7 +40,7 @@ describe("ECUCodes", () => {
 
   it("adds a new pending ECU code", async () => {
     const user = userEvent.setup();
-    apiClient.post.mockResolvedValueOnce({
+    vi.mocked(apiClient.post).mockResolvedValueOnce({
       data: {
         id: 6,
         carId: 12,
@@ -69,7 +69,7 @@ describe("ECUCodes", () => {
 
   it("toggles an ECU code status", async () => {
     const user = userEvent.setup();
-    apiClient.get.mockResolvedValueOnce({
+    vi.mocked(apiClient.get).mockResolvedValueOnce({
       data: [
         {
           id: 5,
@@ -80,7 +80,7 @@ describe("ECUCodes", () => {
         },
       ],
     });
-    apiClient.put.mockResolvedValueOnce({});
+    vi.mocked(apiClient.put).mockResolvedValueOnce({});
 
     render(<ECUCodes carId={12} />);
 

@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, type ChangeEvent } from "react";
 import ServiceRecordItem from "./ServiceRecordItem";
 import AddServiceRecordForm from "./AddServiceRecordForm";
 import ECUCodes from "./ECUCodes";
@@ -6,23 +6,33 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Wrench, Calendar } from "lucide-react";
 import { apiUrl } from "@/api/client";
+import type { ServiceRecord, ServiceRecordEditForm, ServiceRecordForm } from "@/types";
 
-function ServiceHistory({ carId }) {
-  const [serviceRecords, setServiceRecords] = useState([]);
-  const [newRecord, setNewRecord] = useState({
+interface ServiceHistoryProps {
+  carId: number;
+}
+
+function ServiceHistory({ carId }: ServiceHistoryProps) {
+  const [serviceRecords, setServiceRecords] = useState<ServiceRecord[]>([]);
+  const [newRecord, setNewRecord] = useState<ServiceRecordForm>({
     date: "",
     serviceType: "",
     notes: "",
     cost: "",
   });
-  const [editingRecordId, setEditingRecordId] = useState(null);
-  const [editForm, setEditForm] = useState({});
+  const [editingRecordId, setEditingRecordId] = useState<number | null>(null);
+  const [editForm, setEditForm] = useState<ServiceRecordEditForm>({
+    date: "",
+    serviceType: "",
+    notes: "",
+    cost: "",
+  });
 
   const fetchServiceRecords = useCallback(async () => {
     try {
       const res = await fetch(apiUrl(`/api/servicerecords/car/${carId}`));
       if (!res.ok) throw new Error("Failed to fetch service records");
-      const data = await res.json();
+      const data = await res.json() as ServiceRecord[];
       setServiceRecords(data);
     } catch (error) {
       console.error("Error loading service records:", error);
@@ -33,7 +43,7 @@ function ServiceHistory({ carId }) {
     fetchServiceRecords();
   }, [fetchServiceRecords]);
 
-  const handleRecordChange = (e) => {
+  const handleRecordChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setNewRecord((prev) => ({ ...prev, [name]: value }));
   };
@@ -57,7 +67,7 @@ function ServiceHistory({ carId }) {
       fetchServiceRecords();
       setNewRecord({ date: '', serviceType: '', notes: '', cost: '' });
     } catch (error) {
-      alert(error.message);
+      alert(error instanceof Error ? error.message : "Failed to add service record");
     }
   };
 
@@ -103,7 +113,7 @@ function ServiceHistory({ carId }) {
             <AddServiceRecordForm
               newRecord={newRecord}
               onChange={handleRecordChange}
-              onSubmit={() => handleAddServiceRecord(carId)}
+              onSubmit={handleAddServiceRecord}
             />
           </div>
         </CardContent>

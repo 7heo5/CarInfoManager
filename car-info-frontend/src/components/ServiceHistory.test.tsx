@@ -9,7 +9,7 @@ vi.mock("./ECUCodes", () => ({
 
 describe("ServiceHistory", () => {
   it("loads service records for a vehicle", async () => {
-    globalThis.fetch = vi.fn().mockResolvedValue({
+    const fetchMock = vi.fn().mockResolvedValue({
       ok: true,
       json: vi.fn().mockResolvedValue([
         {
@@ -22,19 +22,20 @@ describe("ServiceHistory", () => {
         },
       ]),
     });
+    globalThis.fetch = fetchMock as unknown as typeof fetch;
 
     render(<ServiceHistory carId={2} />);
 
     expect(await screen.findByText("MOT")).toBeInTheDocument();
     expect(screen.getByText("Passed")).toBeInTheDocument();
-    expect(globalThis.fetch).toHaveBeenCalledWith(
+    expect(fetchMock).toHaveBeenCalledWith(
       "http://localhost:5257/api/servicerecords/car/2"
     );
   });
 
   it("posts a new service record and refreshes the list", async () => {
     const user = userEvent.setup();
-    globalThis.fetch = vi
+    const fetchMock = vi
       .fn()
       .mockResolvedValueOnce({
         ok: true,
@@ -45,6 +46,7 @@ describe("ServiceHistory", () => {
         ok: true,
         json: vi.fn().mockResolvedValue([]),
       });
+    globalThis.fetch = fetchMock as unknown as typeof fetch;
 
     render(<ServiceHistory carId={2} />);
 
@@ -54,11 +56,11 @@ describe("ServiceHistory", () => {
     await user.type(screen.getByLabelText(/cost/i), "120");
     await user.click(screen.getByRole("button", { name: /add service record/i }));
 
-    await waitFor(() => expect(globalThis.fetch).toHaveBeenCalledTimes(3));
-    const [, request] = globalThis.fetch.mock.calls[1];
+    await waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(3));
+    const [, request] = fetchMock.mock.calls[1];
     const body = JSON.parse(request.body);
 
-    expect(globalThis.fetch.mock.calls[1][0]).toBe("http://localhost:5257/api/servicerecords");
+    expect(fetchMock.mock.calls[1][0]).toBe("http://localhost:5257/api/servicerecords");
     expect(request.method).toBe("POST");
     expect(body).toMatchObject({
       carId: 2,

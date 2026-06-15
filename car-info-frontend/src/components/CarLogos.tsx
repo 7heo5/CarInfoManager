@@ -3,7 +3,7 @@
 import React from "react";
 
 // Default fallback icon (simple SVG)
-const DefaultCarLogo = ({ className = "w-8 h-8" }) => (
+const DefaultCarLogo = ({ className = "w-8 h-8" }: { className?: string }) => (
   <svg viewBox="0 0 100 100" className={className}>
     <rect x="20" y="30" width="60" height="40" rx="5" fill="#6B7280" />
     <circle cx="30" cy="70" r="8" fill="#374151" />
@@ -12,7 +12,13 @@ const DefaultCarLogo = ({ className = "w-8 h-8" }) => (
   </svg>
 );
 
-const LogoWithFallback = ({ src, alt, className, fallback }) => {
+interface LogoWithFallbackProps extends React.ImgHTMLAttributes<HTMLImageElement> {
+  src: string;
+  alt: string;
+  fallback: React.ReactNode;
+}
+
+const LogoWithFallback = ({ src, alt, className, fallback, ...props }: LogoWithFallbackProps) => {
   const [hasError, setHasError] = React.useState(false);
   if (hasError) return fallback;
   return (
@@ -21,13 +27,14 @@ const LogoWithFallback = ({ src, alt, className, fallback }) => {
       alt={alt}
       className={className}
       onError={() => setHasError(true)}
+      {...props}
     />
   );
 };
 
 // Verified working carlogos.org image map
-const getBrandLogoUrl = (make) => {
-  const brandMap = {
+const getBrandLogoUrl = (make: string) => {
+  const brandMap: Record<string, string> = {
     audi: "https://www.carlogos.org/car-logos/audi-logo.png",
     bmw: "https://www.carlogos.org/car-logos/bmw-logo.png",
     mercedes: "https://www.carlogos.org/car-logos/mercedes-benz-logo.png",
@@ -95,7 +102,7 @@ const getBrandLogoUrl = (make) => {
   return entry ? entry[1] : undefined;
 };
 
-export const getCarLogoComponent = (make, className = "w-[40px] h-[40px]") => {
+export const getCarLogoComponent = (make?: string | null, className = "w-[40px] h-[40px]") => {
   if (!make) return <DefaultCarLogo className={className} />;
 
   const logoUrl = getBrandLogoUrl(make);

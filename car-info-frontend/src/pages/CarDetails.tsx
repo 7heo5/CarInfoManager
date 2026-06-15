@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { apiUrl } from "@/api/client";
+import type { Car } from "@/types";
 
 const CarDetails = () => {
-    const [car, setCar] = useState(null);
+    const [car, setCar] = useState<Car | null>(null);
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
+    const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
         const fetchCar = async () => {
@@ -13,10 +14,10 @@ const CarDetails = () => {
                 if (!response.ok) {
                     throw new Error("Failed to fetch car details");
                 }
-                const data = await response.json();
+                const data = await response.json() as Car;
                 setCar(data);
             } catch (err) {
-                setError(err.message);
+                setError(err instanceof Error ? err.message : "Failed to fetch car details");
             } finally {
                 setLoading(false);
             }

@@ -18,7 +18,8 @@ describe("ServiceRecordItem", () => {
     const setServiceRecords = vi.fn();
     const setEditingRecordId = vi.fn();
     const setEditForm = vi.fn();
-    globalThis.fetch = vi.fn().mockResolvedValue({ ok: true });
+    const fetchMock = vi.fn().mockResolvedValue({ ok: true });
+    globalThis.fetch = fetchMock as unknown as typeof fetch;
 
     render(
       <ServiceRecordItem
@@ -31,7 +32,7 @@ describe("ServiceRecordItem", () => {
           date: "2026-06-01",
           serviceType: "Inspection",
           notes: "Initial notes",
-          cost: 80,
+          cost: "80",
         }}
         setEditForm={setEditForm}
         setServiceRecords={setServiceRecords}
@@ -43,9 +44,9 @@ describe("ServiceRecordItem", () => {
     await user.type(serviceTypeInput, "Brake Service");
     await user.click(screen.getByRole("button", { name: /save changes/i }));
 
-    await waitFor(() => expect(globalThis.fetch).toHaveBeenCalledTimes(1));
-    expect(globalThis.fetch.mock.calls[0][0]).toBe("http://localhost:5257/api/servicerecords/2");
-    expect(globalThis.fetch.mock.calls[0][1]).toEqual(
+    await waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(1));
+    expect(fetchMock.mock.calls[0][0]).toBe("http://localhost:5257/api/servicerecords/2");
+    expect(fetchMock.mock.calls[0][1]).toEqual(
       expect.objectContaining({ method: "PUT" })
     );
     expect(setServiceRecords).toHaveBeenCalledWith(expect.any(Function));
@@ -56,14 +57,15 @@ describe("ServiceRecordItem", () => {
     const user = userEvent.setup();
     const setServiceRecords = vi.fn();
     vi.spyOn(window, "confirm").mockReturnValue(true);
-    globalThis.fetch = vi.fn().mockResolvedValue({ ok: true });
+    const fetchMock = vi.fn().mockResolvedValue({ ok: true });
+    globalThis.fetch = fetchMock as unknown as typeof fetch;
 
     render(
       <ServiceRecordItem
         record={record}
         editingRecordId={null}
         setEditingRecordId={vi.fn()}
-        editForm={{}}
+        editForm={{ date: "", serviceType: "", notes: "", cost: "" }}
         setEditForm={vi.fn()}
         setServiceRecords={setServiceRecords}
       />
@@ -72,7 +74,7 @@ describe("ServiceRecordItem", () => {
     await user.click(screen.getAllByRole("button")[1]);
 
     expect(window.confirm).toHaveBeenCalled();
-    expect(globalThis.fetch).toHaveBeenCalledWith(
+    expect(fetchMock).toHaveBeenCalledWith(
       "http://localhost:5257/api/servicerecords/2",
       { method: "DELETE" }
     );

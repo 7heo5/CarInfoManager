@@ -1,7 +1,13 @@
 import * as React from "react"
 import { cn } from "@/lib/utils"
 
-const Badge = React.forwardRef(({ className, variant = "default", ...props }, ref) => {
+type BadgeVariant = "default" | "secondary" | "destructive" | "outline"
+
+interface BadgeProps extends React.HTMLAttributes<HTMLDivElement> {
+  variant?: BadgeVariant
+}
+
+const Badge = React.forwardRef<HTMLDivElement, BadgeProps>(({ className, variant = "default", ...props }, ref) => {
   const variants = {
     default:
       "border-transparent bg-primary text-primary-foreground hover:bg-primary/80",
@@ -10,7 +16,7 @@ const Badge = React.forwardRef(({ className, variant = "default", ...props }, re
     destructive:
       "border-transparent bg-destructive text-destructive-foreground hover:bg-destructive/80",
     outline: "text-foreground",
-  }
+  } satisfies Record<BadgeVariant, string>
 
   return (
     <div

@@ -7,11 +7,12 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Plus } from "lucide-react";
 import { getCarLogoComponent } from "@/components/CarLogos";
 import { apiUrl } from "@/api/client";
+import type { Car } from "@/types";
 
 function Dashboard() {
-  const [cars, setCars] = useState([]);
+  const [cars, setCars] = useState<Car[]>([]);
   const [error, setError] = useState('');
-  const [expandedCarId, setExpandedCarId] = useState(null);
+  const [expandedCarId, setExpandedCarId] = useState<number | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -20,14 +21,14 @@ function Dashboard() {
         if (!res.ok) throw new Error("Failed to load cars.");
         return res.json();
       })
-      .then((data) => setCars(data))
+      .then((data: Car[]) => setCars(data))
       .catch((err) => {
         console.error("Error loading cars:", err);
         setError("Failed to load cars.");
       });
   }, []);
 
-  const handleDelete = async (id) => {
+  const handleDelete = async (id: number) => {
     const res = await fetch(apiUrl(`/api/cars/${id}`), {
       method: 'DELETE',
     });
@@ -39,7 +40,7 @@ function Dashboard() {
     }
   };
 
-  const toggleServiceHistory = (carId) => {
+  const toggleServiceHistory = (carId: number) => {
     setExpandedCarId(expandedCarId === carId ? null : carId);
   };
 
