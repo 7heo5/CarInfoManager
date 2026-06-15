@@ -21,6 +21,7 @@ public class ECUCodesController : ControllerBase
             .Select(e => new ECUCodeDto
             {
                 Id = e.Id,
+                CarId = e.CarId,
                 Code = e.Code,
                 Description = e.Description,
                 Status = e.Status.ToString(),
