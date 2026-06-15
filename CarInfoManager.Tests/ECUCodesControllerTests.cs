@@ -6,6 +6,29 @@ namespace CarInfoManager.Tests;
 public class ECUCodesControllerTests : ControllerTestBase
 {
     [Fact]
+    public async Task GetCodes_ReturnsVehicleAssociation()
+    {
+        var car = new Car { Make = "Mini", Model = "JCW", Year = 2009, VIN = "MINIVIN12345678" };
+        var code = new ECUCode
+        {
+            Car = car,
+            Code = "P0171",
+            Description = "System too lean",
+            Status = ECUStatus.Resolved
+        };
+        Context.ECUCodes.Add(code);
+        await Context.SaveChangesAsync();
+
+        var controller = new ECUCodesController(Context);
+
+        var result = await controller.GetCodes(car.Id);
+
+        var returnedCode = Assert.Single(Assert.IsAssignableFrom<IEnumerable<ECUCodeDto>>(result.Value));
+        Assert.Equal(car.Id, returnedCode.CarId);
+        Assert.Equal("Resolved", returnedCode.Status);
+    }
+
+    [Fact]
     public async Task AddCode_CreatesPendingCodeForVehicle()
     {
         var car = new Car { Make = "Nissan", Model = "NV200", Year = 2015, VIN = "NISSANVIN123456" };

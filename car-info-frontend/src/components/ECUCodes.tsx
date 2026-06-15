@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Plus, Edit, Trash2, CheckCircle, Clock, Wrench } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { apiClient } from "@/api/client";
+import { apiDelete, apiGet, apiPost, apiPut } from "@/api/client";
 import type { ECUCode, ECUCodeForm, ECUCodeStatus } from "@/types";
 
 interface ECUCodesProps {
@@ -23,12 +23,10 @@ export default function ECUCodes({ carId }: ECUCodesProps) {
     useEffect(() => {
         if (!carId) return;
 
-        apiClient
-            .get<ECUCode[]>(`/api/ECUCodes/${carId}`)
-            .then((res) => {
+        apiGet<ECUCode[]>(`/api/ECUCodes/${carId}`)
+            .then((data) => {
                 // Ensure we always store an array
-                const data = Array.isArray(res.data) ? res.data : [];
-                setCodes(data);
+                setCodes(Array.isArray(data) ? data : []);
             })
             .catch((err) => {
                 console.error("Failed to fetch ECU codes:", err);
@@ -39,13 +37,13 @@ export default function ECUCodes({ carId }: ECUCodesProps) {
 
     const addCode = async () => {
         try {
-            const res = await apiClient.post<ECUCode>("/api/ECUCodes", {
+            const createdCode = await apiPost<ECUCode, Omit<ECUCodeForm, "status"> & { carId: number; status: ECUCodeStatus }>("/api/ECUCodes", {
                 carId,
                 code: newCode.code,
                 description: newCode.description,
                 status: "Pending",
             });
-            setCodes([...codes, res.data]);
+            setCodes([...codes, createdCode]);
             setNewCode({ code: "", description: "" });
             setShowForm(false);
         } catch (err) {
@@ -69,7 +67,7 @@ export default function ECUCodes({ carId }: ECUCodesProps) {
 
     const updateCode = async () => {
         try {
-            await apiClient.put(`/api/ECUCodes/${editingCode}`, {
+            await apiPut(`/api/ECUCodes/${editingCode}`, {
                 code: editForm.code,
                 description: editForm.description,
                 status: editForm.status,
@@ -92,7 +90,7 @@ export default function ECUCodes({ carId }: ECUCodesProps) {
         }
         
         try {
-            await apiClient.delete(`/api/ECUCodes/${id}`);
+            await apiDelete(`/api/ECUCodes/${id}`);
             setCodes(codes.filter(c => c.id !== id));
         } catch (err) {
             console.error("Error deleting ECU code:", err);
@@ -102,7 +100,7 @@ export default function ECUCodes({ carId }: ECUCodesProps) {
     const toggleStatus = async (code: ECUCode) => {
         const newStatus: ECUCodeStatus = code.status === "Pending" ? "Resolved" : "Pending";
         try {
-            await apiClient.put(`/api/ECUCodes/${code.id}`, {
+            await apiPut(`/api/ECUCodes/${code.id}`, {
                 code: code.code,
                 description: code.description,
                 status: newStatus,
