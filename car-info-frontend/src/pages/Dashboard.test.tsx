@@ -6,7 +6,7 @@ import { renderWithRouter } from "@/test/renderWithRouter";
 
 describe("Dashboard", () => {
   it("renders customer vehicle cards from the API", async () => {
-    globalThis.fetch = vi.fn().mockResolvedValue({
+    const fetchMock = vi.fn().mockResolvedValue({
       ok: true,
       json: vi.fn().mockResolvedValue([
         {
@@ -17,8 +17,9 @@ describe("Dashboard", () => {
           vin: "VIN12345678901234",
           customer: { name: "Taylor Motors", phone: "07700 900123" },
         },
-      ]),
+      ]), 
     });
+    globalThis.fetch = fetchMock as unknown as typeof fetch;
 
     renderWithRouter(<Dashboard />);
 
@@ -29,7 +30,7 @@ describe("Dashboard", () => {
 
   it("removes a vehicle card after a successful delete", async () => {
     const user = userEvent.setup();
-    globalThis.fetch = vi
+    const fetchMock = vi
       .fn()
       .mockResolvedValueOnce({
         ok: true,
@@ -45,6 +46,7 @@ describe("Dashboard", () => {
         ]),
       })
       .mockResolvedValueOnce({ ok: true });
+    globalThis.fetch = fetchMock as unknown as typeof fetch;
 
     renderWithRouter(<Dashboard />);
 
@@ -52,7 +54,7 @@ describe("Dashboard", () => {
     await user.click(screen.getByRole("button", { name: /delete/i }));
 
     await waitFor(() => expect(screen.queryByText("Ford Transit")).not.toBeInTheDocument());
-    expect(globalThis.fetch.mock.calls[1][0]).toBe("http://localhost:5257/api/cars/1");
-    expect(globalThis.fetch.mock.calls[1][1]).toEqual({ method: "DELETE" });
+    expect(fetchMock.mock.calls[1][0]).toBe("http://localhost:5257/api/cars/1");
+    expect(fetchMock.mock.calls[1][1]).toEqual({ method: "DELETE" });
   });
 });

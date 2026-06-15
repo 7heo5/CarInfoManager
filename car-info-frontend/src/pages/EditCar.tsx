@@ -1,10 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button-component";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowLeft, Car, Loader2, Save } from "lucide-react";
 import { apiUrl } from "@/api/client";
+import type { Car as CarRecord, Customer } from "@/types";
 
 function EditCar() {
     const { id } = useParams();
@@ -14,7 +15,7 @@ function EditCar() {
     const [model, setModel] = useState("");
     const [year, setYear] = useState("");
     const [vin, setVin] = useState("");
-    const [customerId, setCustomerId] = useState(null);
+    const [customerId, setCustomerId] = useState<number | null>(null);
     const [customerName, setCustomerName] = useState("");
     const [customerPhone, setCustomerPhone] = useState("");
     const [customerEmail, setCustomerEmail] = useState("");
@@ -26,12 +27,12 @@ function EditCar() {
         fetch(apiUrl(`/api/cars/${id}`))
             .then((res) => {
                 if (!res.ok) throw new Error("Failed to load car.");
-                return res.json();
+                return res.json() as Promise<CarRecord>;
             })
             .then((data) => {
                 setMake(data.make);
                 setModel(data.model);
-                setYear(data.year);
+                setYear(String(data.year));
                 setVin(data.vin);
                 setCustomerId(data.customerId ?? data.customer?.id ?? null);
                 setCustomerName(data.customer?.name ?? "");
@@ -46,11 +47,11 @@ function EditCar() {
             });
     }, [id]);
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setIsLoading(true);
         
-        const customer = {
+        const customer: Customer = {
             name: customerName,
             phone: customerPhone,
             email: customerEmail,
@@ -62,7 +63,7 @@ function EditCar() {
         }
 
         const updatedCar = {
-            id: parseInt(id),
+            id: parseInt(id ?? "", 10),
             make,
             model,
             year: parseInt(year),
@@ -81,7 +82,7 @@ function EditCar() {
             if (!res.ok) throw new Error("Failed to update vehicle record.");
             navigate('/');
         } catch (err) {
-            setError(err.message);
+            setError(err instanceof Error ? err.message : "Failed to update vehicle record.");
         } finally {
             setIsLoading(false);
         }
@@ -244,7 +245,7 @@ function EditCar() {
                                     placeholder="17-character VIN"
                                     value={vin}
                                     onChange={(e) => setVin(e.target.value)}
-                                    maxLength="17"
+                                    maxLength={17}
                                     required
                                 />
                             </div>

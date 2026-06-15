@@ -4,8 +4,17 @@ import { Button } from "@/components/ui/button-component";
 import { Badge } from "@/components/ui/badge";
 import { Edit, Trash2, Wrench, ChevronDown, ChevronUp, UserRound, Phone } from "lucide-react";
 import { getCarLogoComponent } from "@/components/CarLogos";
+import type { Car } from "@/types";
 
-function CarCard({ car, onViewServiceHistory, onDelete, onEdit, expanded }) {
+interface CarCardProps {
+  car: Car;
+  onViewServiceHistory: (carId: number) => void;
+  onDelete: (carId: number) => void | Promise<void>;
+  onEdit: (carId: number) => void;
+  expanded: boolean;
+}
+
+function CarCard({ car, onViewServiceHistory, onDelete, onEdit, expanded }: CarCardProps) {
   return (
     <div className="w-full">
       <Card className="hover:shadow-lg transition-shadow h-full min-h-[200px] flex flex-col">

@@ -7,19 +7,24 @@ import { Badge } from "@/components/ui/badge";
 import { Plus, Edit, Trash2, CheckCircle, Clock, Wrench } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { apiClient } from "@/api/client";
+import type { ECUCode, ECUCodeForm, ECUCodeStatus } from "@/types";
 
-export default function ECUCodes({ carId }) {
-    const [codes, setCodes] = useState([]);
+interface ECUCodesProps {
+    carId: number;
+}
+
+export default function ECUCodes({ carId }: ECUCodesProps) {
+    const [codes, setCodes] = useState<ECUCode[]>([]);
     const [newCode, setNewCode] = useState({ code: "", description: "" });
     const [showForm, setShowForm] = useState(false);
-    const [editingCode, setEditingCode] = useState(null);
-    const [editForm, setEditForm] = useState({ code: "", description: "", status: "Pending" });
+    const [editingCode, setEditingCode] = useState<number | null>(null);
+    const [editForm, setEditForm] = useState<ECUCodeForm>({ code: "", description: "", status: "Pending" });
 
     useEffect(() => {
         if (!carId) return;
 
         apiClient
-            .get(`/api/ECUCodes/${carId}`)
+            .get<ECUCode[]>(`/api/ECUCodes/${carId}`)
             .then((res) => {
                 // Ensure we always store an array
                 const data = Array.isArray(res.data) ? res.data : [];
@@ -34,7 +39,7 @@ export default function ECUCodes({ carId }) {
 
     const addCode = async () => {
         try {
-            const res = await apiClient.post("/api/ECUCodes", {
+            const res = await apiClient.post<ECUCode>("/api/ECUCodes", {
                 carId,
                 code: newCode.code,
                 description: newCode.description,
@@ -48,7 +53,7 @@ export default function ECUCodes({ carId }) {
         }
     };
 
-    const startEdit = (code) => {
+    const startEdit = (code: ECUCode) => {
         setEditingCode(code.id);
         setEditForm({
             code: code.code,
@@ -81,7 +86,7 @@ export default function ECUCodes({ carId }) {
         }
     };
 
-    const deleteCode = async (id) => {
+    const deleteCode = async (id: number) => {
         if (!window.confirm("Are you sure you want to delete this ECU code?")) {
             return;
         }
@@ -94,8 +99,8 @@ export default function ECUCodes({ carId }) {
         }
     };
 
-    const toggleStatus = async (code) => {
-        const newStatus = code.status === "Pending" ? "Resolved" : "Pending";
+    const toggleStatus = async (code: ECUCode) => {
+        const newStatus: ECUCodeStatus = code.status === "Pending" ? "Resolved" : "Pending";
         try {
             await apiClient.put(`/api/ECUCodes/${code.id}`, {
                 code: code.code,

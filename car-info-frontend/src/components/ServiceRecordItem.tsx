@@ -1,17 +1,29 @@
+import type { ChangeEvent, Dispatch, FormEvent, SetStateAction } from "react";
 import { Button } from "@/components/ui/button-component";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Edit, Trash2, Save, X, Calendar, DollarSign, FileText } from "lucide-react";
 import { apiUrl } from "@/api/client";
+import type { ServiceRecord, ServiceRecordEditForm } from "@/types";
 
-function ServiceRecordItem({ record, editingRecordId, setEditingRecordId, editForm, setEditForm, setServiceRecords }) {
-  const handleEditChange = (e) => {
+interface ServiceRecordItemProps {
+  record: ServiceRecord;
+  editingRecordId: number | null;
+  setEditingRecordId: Dispatch<SetStateAction<number | null>>;
+  editForm: ServiceRecordEditForm;
+  setEditForm: Dispatch<SetStateAction<ServiceRecordEditForm>>;
+  setServiceRecords: Dispatch<SetStateAction<ServiceRecord[]>>;
+  refreshServiceHistory?: () => Promise<void>;
+}
+
+function ServiceRecordItem({ record, editingRecordId, setEditingRecordId, editForm, setEditForm, setServiceRecords }: ServiceRecordItemProps) {
+  const handleEditChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setEditForm((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleEditSubmit = async (e) => {
+  const handleEditSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const updated = {
       ...editForm,
@@ -26,7 +38,7 @@ function ServiceRecordItem({ record, editingRecordId, setEditingRecordId, editFo
     });
 
     if (res.ok) {
-      setServiceRecords((prev) => prev.map((r) => (r.id === updated.id ? updated : r)));
+      setServiceRecords((prev) => prev.map((r) => (r.id === updated.id ? { ...r, ...updated } : r)));
       setEditingRecordId(null);
     } else {
       alert("Failed to update service record.");
@@ -152,8 +164,8 @@ function ServiceRecordItem({ record, editingRecordId, setEditingRecordId, editFo
                   carId: record.carId,
                   date: record.date.split('T')[0],
                   serviceType: record.serviceType,
-                  cost: record.cost,
-                  notes: record.notes,
+                  cost: String(record.cost),
+                  notes: record.notes ?? "",
                 });
               }}
               variant="outline"

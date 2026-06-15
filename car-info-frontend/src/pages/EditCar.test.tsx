@@ -7,7 +7,7 @@ import { renderWithRouter } from "@/test/renderWithRouter";
 describe("EditCar", () => {
   it("updates an existing vehicle with an existing customer", async () => {
     const user = userEvent.setup();
-    globalThis.fetch = vi
+    const fetchMock = vi
       .fn()
       .mockResolvedValueOnce({
         ok: true,
@@ -28,6 +28,7 @@ describe("EditCar", () => {
         }),
       })
       .mockResolvedValueOnce({ ok: true });
+    globalThis.fetch = fetchMock as unknown as typeof fetch;
 
     renderWithRouter(<EditCar />, { route: "/edit/7", path: "/edit/:id" });
 
@@ -38,11 +39,11 @@ describe("EditCar", () => {
     await user.type(screen.getByLabelText(/^model$/i), "M2 Competition");
     await user.click(screen.getByRole("button", { name: /update vehicle record/i }));
 
-    await waitFor(() => expect(globalThis.fetch).toHaveBeenCalledTimes(2));
-    const [, request] = globalThis.fetch.mock.calls[1];
+    await waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(2));
+    const [, request] = fetchMock.mock.calls[1];
     const body = JSON.parse(request.body);
 
-    expect(globalThis.fetch.mock.calls[1][0]).toBe("http://localhost:5257/api/cars/7");
+    expect(fetchMock.mock.calls[1][0]).toBe("http://localhost:5257/api/cars/7");
     expect(request.method).toBe("PUT");
     expect(body.customerId).toBe(3);
     expect(body.customer).toMatchObject({ id: 3, name: "New Customer" });
@@ -51,7 +52,7 @@ describe("EditCar", () => {
 
   it("does not send a null customer id for legacy vehicles without customers", async () => {
     const user = userEvent.setup();
-    globalThis.fetch = vi
+    const fetchMock = vi
       .fn()
       .mockResolvedValueOnce({
         ok: true,
@@ -66,6 +67,7 @@ describe("EditCar", () => {
         }),
       })
       .mockResolvedValueOnce({ ok: true });
+    globalThis.fetch = fetchMock as unknown as typeof fetch;
 
     renderWithRouter(<EditCar />, { route: "/edit/8", path: "/edit/:id" });
 
@@ -73,8 +75,8 @@ describe("EditCar", () => {
     await user.type(screen.getByLabelText(/customer name/i), "Sam Green");
     await user.click(screen.getByRole("button", { name: /update vehicle record/i }));
 
-    await waitFor(() => expect(globalThis.fetch).toHaveBeenCalledTimes(2));
-    const body = JSON.parse(globalThis.fetch.mock.calls[1][1].body);
+    await waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(2));
+    const body = JSON.parse(fetchMock.mock.calls[1][1].body);
 
     expect(body.customerId).toBeNull();
     expect(body.customer).toEqual({

@@ -6,7 +6,7 @@ import AddServiceRecordForm from "./AddServiceRecordForm";
 describe("AddServiceRecordForm", () => {
   it("submits the current service record fields", async () => {
     const user = userEvent.setup();
-    const onSubmit = vi.fn().mockResolvedValue();
+    const onSubmit = vi.fn().mockResolvedValue(undefined);
 
     render(
       <AddServiceRecordForm

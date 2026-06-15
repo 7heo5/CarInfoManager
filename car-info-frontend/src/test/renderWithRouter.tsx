@@ -1,7 +1,8 @@
 import { render } from "@testing-library/react";
+import type { ReactElement } from "react";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 
-export function renderWithRouter(ui, { route = "/", path = "/" } = {}) {
+export function renderWithRouter(ui: ReactElement, { route = "/", path = "/" } = {}) {
   return render(
     <MemoryRouter initialEntries={[route]}>
       <Routes>

@@ -1,11 +1,16 @@
-import { useState } from "react";
+import { useState, type FormEvent } from "react";
 import { Button } from "@/components/ui/button-component";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import { Plus, Loader2 } from "lucide-react";
 import { apiUrl } from "@/api/client";
+import type { Car, NewCar } from "@/types";
 
-function AddCarForm({ onCarAdded }) {
+interface AddCarFormProps {
+    onCarAdded: (car: Car) => void;
+}
+
+function AddCarForm({ onCarAdded }: AddCarFormProps) {
     // Track form field values
     const [make, setMake] = useState('');
     const [model, setModel] = useState('');
@@ -18,12 +23,12 @@ function AddCarForm({ onCarAdded }) {
     const [error, setError] = useState('');
     const [isLoading, setIsLoading] = useState(false);
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setIsLoading(true);
 
         //Create car object
-        const newCar = {
+        const newCar: NewCar = {
             make,
             model,
             year: parseInt(year),
@@ -49,7 +54,7 @@ function AddCarForm({ onCarAdded }) {
                 throw new Error('Failed to add car');
             }
 
-            const createdCar = await res.json();
+            const createdCar = await res.json() as Car;
             onCarAdded(createdCar); // Notify parent to update list
 
             // Clear the form
@@ -63,7 +68,7 @@ function AddCarForm({ onCarAdded }) {
             setCustomerNotes('');
             setError('');
         } catch (err) {
-            setError(err.message);
+            setError(err instanceof Error ? err.message : "Failed to add car");
         } finally {
             setIsLoading(false);
         }
@@ -194,7 +199,7 @@ function AddCarForm({ onCarAdded }) {
                         placeholder="17-character VIN"
                         value={vin}
                         onChange={(e) => setVin(e.target.value)}
-                        maxLength="17"
+                        maxLength={17}
                         required
                     />
                 </div>
